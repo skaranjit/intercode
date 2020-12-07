@@ -5,6 +5,7 @@ import intercode.visitor.ASTVisitor;
 public class StatementNode extends Node {
     //
     //public Node assign;
+    public StatementNode stmt;
 
     public StatementNode(){}
 
