@@ -22,13 +22,13 @@ public class InterCode extends ASTVisitor {
    // String indent="...";
 
 
-   public InterCodeGen(TypeChecker checker)
+   public InterCode(TypeChecker checker)
     {
             this.checker = checker;
             this.cu = checker.cu;
             visit(cu);
     }
-    public InterCodeGen()
+    public InterCode()
     {
             visit(this.checker.cu);
     }
