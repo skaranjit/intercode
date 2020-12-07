@@ -96,7 +96,7 @@ public class InterCode extends ASTVisitor {
         println("*************End of the InterCode Generator*************");
     }
 
-    public void visit (BlockStatementNode n)
+    public void visit (BlockStatement n)
     {
 	    
 	for(DeclarationNode decl : n.decls)
