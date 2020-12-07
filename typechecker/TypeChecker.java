@@ -45,17 +45,18 @@ public class TypeChecker extends ASTVisitor {
 
 
     public void visit(CompilationUnit n){
-        System.out.println("*********************");
+        println("*********************");
         System.out.println(" ** TypeChecker Starts ***");
-        System.out.println(" **********************");
+        println(" **********************");
         System.out.println();
         System.out.println(" Compilation Unit");
         n.block.accept(this);
+        println(" **********************");
+        println("*********TypeChecker Passed***********");
+        println(" **********************");
     }
     public void visit(BlockStatement  n){
         println(" Block Statement");
-        top = new Env(top);
-        top = n.sTable;
         for(DeclarationNode decl: n.decls)
             decl.accept(this);
         for(StatementNode stmt: n.stmts)
@@ -98,19 +99,18 @@ public class TypeChecker extends ASTVisitor {
          n.expr.accept(this);
     }
     public void visit(IfStatementNode n){
-    System.out.println(" IFStatement Node");
-
-    n.cond.accept(this);
-    n.stmt.accept(this);
-    if(n.else_stmt!=null){
-        System.out.println(" ELSE CLAUSE");
-        n.else_stmt.accept(this);
-    }
+        println(" IFStatement Node");
+        n.cond.accept(this);
+        n.stmt.accept(this);
+        if(n.else_stmt!=null){
+            println(" ELSE CLAUSE");
+            n.else_stmt.accept(this);
+        }
     }
 
     public void visit(WhileStatementNode n){
         whileTrue = true;
-        System.out.println(" While Statement Node");
+        println(" While Statement Node");
         n.cond.accept(this);
         n.stmt.accept(this);
         whileTrue = false;
@@ -166,40 +166,26 @@ public class TypeChecker extends ASTVisitor {
 
     public void visit(AssignmentNode n){
         println(" AssignmentNode");
-        if(top.get(n.id.w)!=null){
-            n.id = top.get(n.id.w);
-        }
+        
         n.id.accept(this);
 
         IdentifierNode leftId=(IdentifierNode)n.id;
-        Type leftType = n.id.type;
+        Type leftType = leftId.type;
      
         
 
         println(" In Typechecker Assignment's left type is "+leftType);
         Type rightType=null;   
         if(n.right instanceof IdentifierNode){
-            if(top.get(((IdentifierNode)n.right).w)!=null){
-                n.right = (IdentifierNode)top.get(((IdentifierNode)n.right).w);
-            }   
             ((IdentifierNode)n.right).accept(this);
-            rightType = ((IdentifierNode)n.right).type;
-
         }else if(n.right instanceof NumNode){
             ((NumNode)n.right).accept(this);
-            rightType=Type.Int;
-
         }else if(n.right instanceof RealNode){
             ((RealNode)n.right).accept(this);
-            rightType=Type.Float;
-
         }else if(n.right instanceof ArrayAccessNode){
             ((ArrayAccessNode)n.right).accept(this);
-
-
         }else if(n.right instanceof ParenthesesNode){
             ((ParenthesesNode)n.right).accept(this);
-
         }else{
             ((BinExprNode)n.right).accept(this);
             rightType=((BinExprNode)n.right).type;
