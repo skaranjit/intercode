@@ -8,7 +8,7 @@ import intercode.visitor.ASTVisitor;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-
+import java.util.*;
 public class InterCode extends ASTVisitor {
 
     public TypeChecker checker= null;
