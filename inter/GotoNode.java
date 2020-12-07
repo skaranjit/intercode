@@ -2,7 +2,7 @@ package intercode.inter;
 import intercode.ast.*;
 import intercode.visitor.*;
 import java.util.*;
-public class GotoNode {
+public class GotoNode extends StatementNode {
 
     public LabelNode gotoLabel = null;
     
