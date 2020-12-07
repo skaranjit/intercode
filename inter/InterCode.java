@@ -179,7 +179,7 @@ public class InterCode extends ASTVisitor {
 
         // create truelabel and falselabel
         n.falseLabel=LabelNode.newLabel();
-
+        println(n.falseLabel.id);
 
         n.stmt.accept(this);
 
