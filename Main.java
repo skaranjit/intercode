@@ -14,7 +14,7 @@ public class Main {
 	Parser parser= new Parser(lexer);
 	TreePrinter tree= new TreePrinter(parser);
 	TypeChecker checker= new TypeChecker(parser);
-        InterCode inter= new InterCode(checker);
+    InterCode inter= new InterCode(checker);
 	UnParser unParser = new UnParser(inter);
     }
 }

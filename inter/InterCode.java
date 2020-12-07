@@ -12,80 +12,58 @@ import java.io.IOException;
 public class InterCode extends ASTVisitor {
 
     public TypeChecker checker= null;
-    public File tempFile;
-    public FileWriter tempFileWriter;
+   
     //public Parser parser;
     public CompilationUnit cu= null;
+    //List of Assignments for the Binary Expressions.
+    public List<AssignmentNode> BinassignList = new ArrayList<AssignmentNode>();
 
     int level=0;
    // String indent="...";
 
 
-    public InterCode(TypeChecker typechecker)
+   public InterCodeGen(TypeChecker checker)
     {
-        try
-        {
-            tempFile = new File("output.txt");
-            tempFileWriter = new FileWriter(tempFile);
-            System.out.println("\n** Output.txt created successfully! ** ");
-        }
-        catch (IOException e)
-        {
-
-        }
-
-        this.checker = typechecker;
-        cu=checker.cu;
-        visit(cu);
-
-        try
-        {
-            tempFileWriter.close();
-        }
-        catch (IOException e)
-        {
-
-        }
+            this.checker = checker;
+            this.cu = checker.cu;
+            visit(cu);
+    }
+    public InterCodeGen()
+    {
+            visit(this.checker.cu);
     }
 
-    public InterCode(){
-        visit(this.checker.cu);
+ //////////////////////////////////////////////////////////////////////////////////////////////////
+  ////                                                                                          ////
+  ////                                    UTILITY METHODS                                      //// 
+  ////                                                                                         ////
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+    void error(String s)
+    {
+        println(s);
+        exit(1);
     }
 
-
-/// Utility Method
-    ///
+    void exit(int n)
+    {
+        System.exit(n);
+    }
 
     void print(String s)
     {
-        try
-        {
-            tempFileWriter.append(s);
-        }
-        catch (IOException e)
-        {
-
-        }
+        System.out.print(s);
     }
 
     void println(String s)
     {
-        try
-        {
-            tempFileWriter.append(s + "\n");
-        }
-        catch (IOException e)
-        {
-
-        }
+        System.out.println(s);
     }
 
     void printSpace()
     {
         System.out.print(" ");
     }
-
-    int indent;
+     int indent = 0;
 
     void indentUp()
     {
@@ -106,35 +84,28 @@ public class InterCode extends ASTVisitor {
         }
         print(s);
     }
+
     ////////////////////////////////////////////////////////////////////////////
 ///////             Utility Methods Ends                         ///////////
 ///////////////////////////////////////////////////////////////////////////
-    public void visit(CompilationUnit n){
+    public void visit (CompilationUnit n)
+    {
+        println("Intercode Generator starts");
+
         n.block.accept(this);
+        println("*************End of the InterCode Generator*************");
     }
 
-    public void visit(BlockStatement n){
-        println("{");
-        indentUp();
-        //n.decls.accept(this);
-        indentDown();
-
-        System.out.println(" Blockstatement");
-        for(DeclarationNode decl:n.decls)
-            decl.accept(this);
-
-
-
-        indentUp();
-        //n.stmts.accept(this);
-        for(StatementNode stmt: n.stmts)
-            stmt.accept(this);
-        indentDown();
-        printIndent();
-        indentDown();
-        println("}");
+    public void visit (BlockStatementNode n)
+    {
+	    
+	for(DeclarationNode decl : n.decls)
+	     decl.accept(this);
+	for(StatementNode stmt : n.stmts){
+		BinassignList = new ArrayList<AssignmentNode>();
+	    stmt.accept(this);
+	}
     }
-
 
     /* public void visit(Declarations n){
          if(n.decls!=null){
@@ -193,8 +164,6 @@ public class InterCode extends ASTVisitor {
 
 
         if(cond.expr instanceof BinExprNode){
-            expr=(BinExprNode)cond.expr;
-        }else if(cond.expr instanceof BinExprNode){
             expr=(BinExprNode)cond.expr;
         }else if(cond.expr instanceof TrueNode){
             expr=(TrueNode)cond.expr;
