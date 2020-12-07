@@ -620,20 +620,19 @@ public class Parser extends ASTVisitor {
         if(look.tag!=Tag.NUM){
             error(" Syntax error:integer number needed instead of"+n.value);
         }
-	n.type=Type.Int;
         match(Tag.NUM);
+        n.type=Type.Int;
        // for(int i=0; i<level;i++){ System.out.print(indent); }
         n.printNode();
         //System.out.println(" "+n.literal);
     }
     public void visit(RealNode n){
         n.value=((Real)look).value;
-	n.type = Type.Float;
         if(look.tag!=Tag.REAL){
             error(" Syntax error: Real number needed instead of "+n.value);
         }
-	n.type=Type.Float;
         match(Tag.REAL);
+        n.type = Type.Float;
        // for(int i=0; i<level;i++){ System.out.print(indent); }
         n.printNode();
     }
@@ -642,7 +641,7 @@ public class Parser extends ASTVisitor {
         n.id= look.toString();
         n.w=(Word)look;
         if((IdentifierNode)top.get(n.w) != null){
-            n = (IdentifierNode)top.get(n.w);
+            n.type = top.get(n.w).type;
         }
         System.out.println(" ********n.type"+n.type);
 

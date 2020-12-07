@@ -256,6 +256,8 @@ public class TypeChecker extends ASTVisitor {
     }
 
     public void visit(IdentifierNode n){
+        System.out.println("visiting IdentifierNode: "+n.w+" of type: "+n.type);
+
         if(n.type == null){ error("Variable: " + n.id + " not declared." );} 
         println(n.id);
     }
