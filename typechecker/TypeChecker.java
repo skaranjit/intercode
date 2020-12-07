@@ -180,6 +180,7 @@ public class TypeChecker extends ASTVisitor {
             ((IdentifierNode)n.right).accept(this);
         }else if(n.right instanceof NumNode){
             ((NumNode)n.right).accept(this);
+            rightType = Type.Int;
         }else if(n.right instanceof RealNode){
             ((RealNode)n.right).accept(this);
         }else if(n.right instanceof ArrayAccessNode){
@@ -205,10 +206,8 @@ public class TypeChecker extends ASTVisitor {
         Type leftType= null;
         ExprNode leftId=null;
         if(n.left instanceof IdentifierNode){
-            if(top.get(((IdentifierNode)n.left).w)!=null){
-                n.left = (IdentifierNode)top.get(((IdentifierNode)n.left).w);
-            }
             ((IdentifierNode)n.left).accept(this);
+            leftType = n.left.type;
         }else if(n.left instanceof NumNode){
             ((NumNode)n.left).accept(this);
             n.left=(NumNode)n.left;
@@ -228,10 +227,9 @@ public class TypeChecker extends ASTVisitor {
         if(n.right!=null){
 
             if(n.right instanceof IdentifierNode){
-                if(top.get(((IdentifierNode)n.right).w)!=null){
-                    n.right = (IdentifierNode)top.get(((IdentifierNode)n.right).w);
-                }
                 ((IdentifierNode)n.right).accept(this);
+                rightId = (IdentifierNode) n.right;
+                rightType = rightId.type;
             }else if(n.right instanceof NumNode){
                 ((NumNode)n.right).accept(this);
             }else if(n.right instanceof RealNode){
