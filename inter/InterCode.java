@@ -17,7 +17,11 @@ public class InterCode extends ASTVisitor {
     public CompilationUnit cu= null;
     //List of Assignments for the Binary Expressions.
     public List<AssignmentNode> BinassignList = new ArrayList<AssignmentNode>();
-
+    ExprNode lhs = null;
+    ExprNode last = null;
+    ExprNode temp1 = null;
+    //For Break Statement Node:
+    private LabelNode globalLabel;
     int level=0;
    // String indent="...";
 
@@ -161,8 +165,6 @@ public class InterCode extends ASTVisitor {
         IdentifierNode temp= TempNode.newTemp();
         ParenthesesNode cond=n.cond;
         ExprNode expr= null;
-
-
         if(cond.expr instanceof BinExprNode){
             expr=(BinExprNode)cond.expr;
         }else if(cond.expr instanceof TrueNode){
@@ -172,6 +174,9 @@ public class InterCode extends ASTVisitor {
         }
 
         AssignmentNode assign= new AssignmentNode(temp,expr);
+        for (AssignmentNode a : BinassignList){
+            n.assigns.add(a);
+        }
         n.assigns.add(assign);
 
         // replace n.cond with temp
@@ -179,36 +184,82 @@ public class InterCode extends ASTVisitor {
 
         // create truelabel and falselabel
         n.falseLabel=LabelNode.newLabel();
-        println(n.falseLabel.id);
-
-        n.stmt.accept(this);
-
+        //n.stmt.accept(this);
+        n.toGoto = new GotoNode(n.falseLabel,n.stmt);
+        n.toGoto.accept(this);
         if(n.else_stmt!=null){
             println(" Else Clause");
             n.else_stmt.accept(this);
         }
 
     }
+    public void visit(GotoNode n){
+        n.stmt.accept(this);
+    }
 
     public void visit(WhileStatementNode n){
         printIndent();
-        print("while (");
+        print("While Statement");
+        Bassigns = new ArrayList<AssignmentNode>();
+        n.startLabel = LabelNode.newLabel();
         n.cond.accept(this);
-        print(")");
-        indentUp();
-        n.stmt.accept(this);
-        indentDown();
+        IdentifierNode temp = TempNode.newTemp();
+        ParenNode cond = (ParenNode)n.condition;
+        ExprNode expr = null;
+        if(cond.node instanceof BinExprNode){
+            expr = (BinExprNode)cond.node;
+    // 		//((BinExprNode)expr).accept(this);
+            expr = Bassigns.get(Bassigns.size()-1).left;
+        } else if (cond.node instanceof BooleanNode){
+            expr = (BooleanNode)cond.node;
+        }
+        AssignmentNode assign = new AssignmentNode(temp, expr);
+        for(AssignmentNode assign1 : Bassigns){
+            n.assigns.add(assign1);
+        }
+        n.assigns.add(assign);
+	    ((ParenNode)n.condition).node = temp;
+        n.falseLabel = LabelNode.newLabel();
+	    globalLabel = n.falseLabel;
+        //n.stmt.accept(this);
+        n.toGoto = new GotoNode(n.falseLabel, n.stmt);
+	    n.toGoto.accept(this);
+       // n.stmt.accept(this);
     }
     public void visit(DoWhileStatementNode n){
         printIndent();
         println("do");
         indentUp();
-        n.stmt.accept(this);
+        n.startLabel = LabelNode.newLabel();
+        n.toGoto = new GotoNode(n.startLabel, n.stmt);
+        n.toGoto.accept(this);
+        println(n.startLabel.id + ": ");
+        print("iffalse ");
+        //n.stmt.accept(this);
         indentDown();
         printIndent();
-        print("while (");
-        n.cond.accept(this);
-        println(");");
+        IdentifierNode temp = TempNode.newTemp();
+        ParenNode cond = (ParenNode)n.condition;
+        ExprNode expr = null;
+        if(cond.node instanceof BinExprNode){
+            expr = (BinExprNode)cond.node;
+    // 		//((BinExprNode)expr).accept(this);
+            expr = Bassigns.get(Bassigns.size()-1).left;
+        } else if (cond.node instanceof BooleanNode){
+            expr = (BooleanNode)cond.node;
+        }
+	AssignmentNode assign = new AssignmentNode(temp, expr);
+        for(AssignmentNode assign1 : Bassigns){
+            n.assigns.add(assign1);
+        }
+        n.assigns.add(assign);
+	    	((ParenNode)n.condition).node = temp;
+
+        n.falseLabel = LabelNode.newLabel();
+        println(" goto " + n.falseLabel.id);
+        println("goto "+n.startLabel.id);
+        print(";");
+        println("");
     }
 
     public void visit(ArrayAccessNode n){
@@ -251,6 +302,7 @@ public class InterCode extends ASTVisitor {
 
     public void visit(BreakStatementNode n){
         printIndent();
+        n.falseLabel = globalLabel;
         println("break;");
     }
     public void visit(TrueNode n){

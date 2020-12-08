@@ -15,7 +15,7 @@ public class StatementNode extends Node {
     //Label for intermediate Code
     public LabelNode startLabel;
     public LabelNode falseLabel;
-    public GotoNode wGoto;
+    public GotoNode toGoto;
     public StatementNode(){}
 
    // public StatementNode(Node assign){
