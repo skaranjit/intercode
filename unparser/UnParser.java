@@ -249,7 +249,7 @@ public class UnParser extends ASTVisitor {
     }
     public void visit(ArrayDimsNode n){
             print("[");
-            for(AssignmentNode a : n.assigs)
+            for(AssignmentNode a : n.assigns)
                 a.accept(this);
             print("]");
             if(n.dim!= null){
