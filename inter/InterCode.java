@@ -162,6 +162,7 @@ public class InterCode extends ASTVisitor {
 
         System.out.println(" If Statementnode");
         n.cond.accept(this);
+        BinassignList = new ArrayList<AssignmentNode>();
         IdentifierNode temp= TempNode.newTemp();
         ParenthesesNode cond=n.cond;
         ExprNode expr= null;
@@ -200,7 +201,7 @@ public class InterCode extends ASTVisitor {
     public void visit(WhileStatementNode n){
         printIndent();
         print("While Statement");
-        Bassigns = new ArrayList<AssignmentNode>();
+        BinassignList = new ArrayList<AssignmentNode>();
         n.startLabel = LabelNode.newLabel();
         n.cond.accept(this);
         IdentifierNode temp = TempNode.newTemp();
@@ -214,7 +215,7 @@ public class InterCode extends ASTVisitor {
             expr = (BooleanNode)cond.node;
         }
         AssignmentNode assign = new AssignmentNode(temp, expr);
-        for(AssignmentNode assign1 : Bassigns){
+        for(AssignmentNode assign1 : BinassignList){
             n.assigns.add(assign1);
         }
         n.assigns.add(assign);
@@ -230,6 +231,7 @@ public class InterCode extends ASTVisitor {
         printIndent();
         println("do");
         indentUp();
+        BinassignList = new ArrayList<AssignmentNode>();
         n.startLabel = LabelNode.newLabel();
         n.toGoto = new GotoNode(n.startLabel, n.stmt);
         n.toGoto.accept(this);
@@ -249,7 +251,7 @@ public class InterCode extends ASTVisitor {
             expr = (BooleanNode)cond.node;
         }
 	AssignmentNode assign = new AssignmentNode(temp, expr);
-        for(AssignmentNode assign1 : Bassigns){
+        for(AssignmentNode assign1 : BinassignList){
             n.assigns.add(assign1);
         }
         n.assigns.add(assign);
