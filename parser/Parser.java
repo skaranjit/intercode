@@ -290,8 +290,10 @@ public class Parser extends ASTVisitor {
         {
             n.expr = rhs_assign;
         }
-        else
-            n.expr = (BinExprNode)parseBinExprNode((ExprNode)rhs_assign, 0);
+        else{
+            n.expr = rhs_assign;
+            n.expr = (BinExprNode) parseBinExprNode(n.expr,0);
+        }
 
         match(')');
         n.type = rhs_assign.type;
