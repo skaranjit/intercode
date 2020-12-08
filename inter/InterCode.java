@@ -328,7 +328,7 @@ public class InterCode extends ASTVisitor {
         if(n.left instanceof IdentifierNode){
            if(((IdentifierNode)n.left).ArrDims != null){
                ((IdentifierNode)n.left).ArrDims.accept(this);
-               n.left = n.left.id;
+               n.left = n.left.ArrDims.id;
            }
            else{
                ((IdentifierNode)n.left).accept(this);
