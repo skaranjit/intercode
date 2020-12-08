@@ -230,7 +230,7 @@ public class UnParser extends ASTVisitor {
         n.startLabel = LabelNode.newLabel();
         n.toGoto = new GotoNode(n.startLabel, n.stmt);
         n.toGoto.accept(this);
-        println(n.startLabel
+        println(n.startLabel.id + ": Do Statement");
          indentDown();
          printIndent();
          print("iffalse ");
