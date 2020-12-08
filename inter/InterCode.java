@@ -288,22 +288,26 @@ public class InterCode extends ASTVisitor {
     public void visit(AssignmentNode n){
         printIndent();
         n.id.accept(this);
+        List<AssignmentNode> temp1 = new ArrayList<AssignmentNode>();
+	    temp1 = BinassignList;
+	    Bassigns = new ArrayList<AssignmentNode>();
         print(" = ");
-        if(n.right instanceof ParenthesesNode){
-            ((ParenthesesNode)n.right).accept(this);
-        }
-        if(n.right instanceof IdentifierNode){
-            ((IdentifierNode)n.right).accept(this);
-        }
-        else if (n.right instanceof NumNode){
-            ((NumNode)n.right).accept(this);
-        }else if(n.right instanceof RealNode){
-            ((RealNode)n.right).accept(this);
-        }else if(n.right instanceof ArrayAccessNode){
-            ((ArrayAccessNode)n.right).accept(this);
-        }else if(n.right instanceof BinExprNode){
-            ((BinExprNode)n.right).accept(this);
-        }
+        n.right.accept(this);
+        // if(n.right instanceof ParenthesesNode){
+        //     ((ParenthesesNode)n.right).accept(this);
+        // }
+        // if(n.right instanceof IdentifierNode){
+        //     ((IdentifierNode)n.right).accept(this);
+        // }
+        // else if (n.right instanceof NumNode){
+        //     ((NumNode)n.right).accept(this);
+        // }else if(n.right instanceof RealNode){
+        //     ((RealNode)n.right).accept(this);
+        // }else if(n.right instanceof ArrayAccessNode){
+        //     ((ArrayAccessNode)n.right).accept(this);
+        // }else if(n.right instanceof BinExprNode){
+        //     ((BinExprNode)n.right).accept(this);
+        // }
 
 
         println(";");
