@@ -273,21 +273,15 @@ public class Parser extends ASTVisitor {
         }
     }
 
-    public void visit(ParenthesesNode n){
-
-        // (ExprNode)(a[(i+j)])
-     //   for(int i=0;i<level;i++){System.out.println(indent);}
+    public void visit(ParenthesesNode n)
+    {
         System.out.println(" Parenthesis Node"+look.toString());
-	     match('(');
-	ExprNode rhs_assign = null;
+	    match('(');
+	    ExprNode rhs_assign = null;
         if (look.tag == Tag.ID)
         {
             rhs_assign = new IdentifierNode();
             ((IdentifierNode)rhs_assign).accept(this);
-// 		 if(look.tag=='['){
-// //                 //***PROBLEM***// ((IdentifierNode)n.expr)
-//                	    rhs_assign=parseArrayAccessNode((IdentifierNode)rhs_assign);
-// 		 }
         }
         else if (look.tag == Tag.NUM)
         {
@@ -299,10 +293,10 @@ public class Parser extends ASTVisitor {
             rhs_assign = new RealNode();
             ((RealNode)rhs_assign).accept(this);
         }
-	else if (look.tag == Tag.TRUE){
-	     rhs_assign = new TrueNode();
-	     ((TrueNode)rhs_assign).accept(this);
-	}
+	    else if (look.tag == Tag.TRUE){
+	        rhs_assign = new TrueNode();
+	        ((TrueNode)rhs_assign).accept(this);
+	    }
         else if (look.tag == '(')
         {
             rhs_assign = new ParenthesesNode();
@@ -313,11 +307,10 @@ public class Parser extends ASTVisitor {
             n.expr = rhs_assign;
         }
         else
-            n.expr = (BinExprNode) parseBinExprNode(rhs_assign, 0);
+            n.expr = (BinExprNode)parseBinExprNode(rhs_assign, 0);
 
-        if(look.tag == ')'){
-		match(')');
-	}else error("Missed ')' ");
+        match(')');
+        n.type = rhs_assign.type;
     }
 
     ExprNode parseArrayAccessNode(IdentifierNode id){
