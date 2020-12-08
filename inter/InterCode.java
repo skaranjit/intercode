@@ -271,7 +271,7 @@ public class InterCode extends ASTVisitor {
     }
     public void visit(ArrayDimsNode n){
         print("[");
-        //n.size.accept(this);
+        n.size.accept(this);
         IdentifierNode temp = TempNode.newTemp();
         ExprNode expr = null;
         if(n.size instanceof BinExprNode){
