@@ -301,11 +301,12 @@ public class Parser extends ASTVisitor {
     ExprNode parseArrayAccessNode(IdentifierNode id){
       //  for(int i=0; i<level;i++){ System.out.print(indent); }
         System.out.println(" parse array access node");
+        IdentifierNode t = new IdentifierNode(id.w,id.type);
         ExprNode index= new ArrayDimsNode();
         //level++;
         index.accept(this);
         //level--;
-        return new ArrayAccessNode(id,index);
+        return new ArrayAccessNode(t,index);
 
     }
     ExprNode parseBinExprNode(ExprNode lhs, int precedence){
@@ -533,6 +534,7 @@ public class Parser extends ASTVisitor {
 //        // level--;*/
     }
     public void visit(ArrayAccessNode n){
+        n.id.accept(this);
         n.index.accept(this);
     }
 
