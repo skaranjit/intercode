@@ -290,7 +290,7 @@ public class InterCode extends ASTVisitor {
         n.id.accept(this);
         List<AssignmentNode> temp1 = new ArrayList<AssignmentNode>();
 	    temp1 = BinassignList;
-	    Bassigns = new ArrayList<AssignmentNode>();
+	    BinassignList = new ArrayList<AssignmentNode>();
         print(" = ");
         n.right.accept(this);
         // if(n.right instanceof ParenthesesNode){
@@ -311,6 +311,7 @@ public class InterCode extends ASTVisitor {
 
 
         println(";");
+        BinassignList = temp1;
     }
 
     public void visit(BreakStatementNode n){
