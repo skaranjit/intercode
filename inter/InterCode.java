@@ -369,7 +369,7 @@ public class InterCode extends ASTVisitor {
         }
         if(n.left != null){
             IdentifierNode temp = TempNode.newTemp();
-            if(!BinassignList.isEmpty()) n.id =lhs;
+            if(!BinassignList.isEmpty()) n.id =(IdentifierNode)lhs;
             temp1 = new BinExprNode(n.op,n.id,n.right);
             AssignmentNode assign = new AssignmentNode(temp, temp1);
             lhs = temp;
