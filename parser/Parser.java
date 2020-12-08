@@ -533,7 +533,7 @@ public class Parser extends ASTVisitor {
 //        // level--;*/
     }
     public void visit(ArrayAccessNode n){
-
+        n.index.accept(this);
     }
 
     public void visit(ArrayDimsNode n){

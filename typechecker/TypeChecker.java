@@ -177,8 +177,6 @@ public class TypeChecker extends ASTVisitor {
             rightType = Type.Int;
         }else if(n.right instanceof RealNode){
             ((RealNode)n.right).accept(this);
-        }else if(n.right instanceof ArrayAccessNode){
-            ((ArrayAccessNode)n.right).accept(this);
         }else if(n.right instanceof ParenthesesNode){
             ((ParenthesesNode)n.right).accept(this);
         }else{
