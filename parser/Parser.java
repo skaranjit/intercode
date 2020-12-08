@@ -339,7 +339,7 @@ public class Parser extends ASTVisitor {
             ExprNode rhs = null;
             if (look.tag == Tag.ID)
             {
-                rhs = new IdentifierNode(w, type);
+                rhs = new IdentifierNode();
                 ((IdentifierNode)rhs).accept(this);
             }
             else if (look.tag == Tag.NUM)
@@ -519,7 +519,7 @@ public class Parser extends ASTVisitor {
            ((ParenthesesNode) n.left).accept(this);
            //   level--;
        } else if (look.tag == Tag.ID) {
-           n.left = new IdentifierNode(w, type);
+           n.left = new IdentifierNode();
            // level++;
            ((IdentifierNode) n.left).accept(this);
            //level--;
@@ -566,7 +566,7 @@ public class Parser extends ASTVisitor {
                 ((ParenthesesNode)index).accept(this);
                 //level--
             }else if(look.tag==Tag.ID){
-                index=new IdentifierNode(w, type);
+                index=new IdentifierNode();
                // level++;
                 //****PROBLEM***********
                 ((IdentifierNode)index).accept(this);
