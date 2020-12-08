@@ -345,7 +345,6 @@ public class Parser extends ASTVisitor {
             while (getPrecedence(look.tag) > op)
             {
                 rhs = parseBinExprNode(rhs, getPrecedence(look.tag));
-                move();
             }
             lhs = new BinExprNode(token_op, lhs, rhs);
             lhs.type = rhs.type;
@@ -386,6 +385,10 @@ public class Parser extends ASTVisitor {
         {
             rhs_assign = new IdentifierNode();
             ((IdentifierNode)rhs_assign).accept(this);
+	    // if(look.tag=='['){
+        //         //***PROBLEM***// ((IdentifierNode)n.expr)
+        //         rhs_assign=parseArrayAccessNode((IdentifierNode)rhs_assign);
+        //     }
         }
         else if (look.tag == Tag.NUM)
         {
@@ -621,15 +624,10 @@ public class Parser extends ASTVisitor {
     public void visit(IdentifierNode n){
         System.out.println(" In Identifier Node");
         n.id= look.toString();
-        n.w = (Word)look;
+        n.w=(Word)look;
         if((IdentifierNode)top.get(n.w) != null){
             n.type = top.get(n.w).type;
         }
-        if(look.tag=='['){
-            n.ArrDims =  parseArrayAccessNode(n);
-            //((ArrayAccessNode)n.ArrDims).accept(this);
-        }
-            
         System.out.println(" ********n.type"+n.type);
 
         if(look.tag!=Tag.ID){
@@ -637,11 +635,14 @@ public class Parser extends ASTVisitor {
         }
          match(Tag.ID);
        
-        
+        if(look.tag=='['){
+
+//             // had to parse
+           n.ArrDims =  parseArrayAccessNode(n);
+       }
        
         // for(int i=0; i<level;i++){ System.out.print(indent); }
         n.printNode();
     }
 
 }
-
