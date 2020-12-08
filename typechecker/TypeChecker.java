@@ -126,7 +126,7 @@ public class TypeChecker extends ASTVisitor {
     }
     public void visit(ArrayAccessNode n){
         println(" ArrayAccessNode");
-        n.id.accept(this);
+        //n.id.accept(this);
         n.index.accept(this);
     }
     public void visit (ArrayDimsNode n){
