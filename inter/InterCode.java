@@ -196,10 +196,7 @@ public class InterCode extends ASTVisitor {
         }
 
     }
-    public void visit(GotoNode n){
-        n.stmt.accept(this);
-    }
-
+    
     public void visit(WhileStatementNode n){
         printIndent();
         print("While Statement");
@@ -407,7 +404,10 @@ public class InterCode extends ASTVisitor {
     public void visit(TempNode n){
 
     }
-    
+    public void visit(GotoNode n){
+        n.stmt.accept(this);
+    }
+
 
 
 

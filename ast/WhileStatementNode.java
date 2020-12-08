@@ -8,7 +8,7 @@ public class WhileStatementNode extends StatementNode {
 
     public ParenthesesNode cond;
     public StatementNode stmt;
-    
+    public GotoNode toGoto;
     public WhileStatementNode(){
 
     }

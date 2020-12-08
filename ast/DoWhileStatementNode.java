@@ -7,7 +7,7 @@ public class DoWhileStatementNode extends StatementNode {
     public StatementNode stmt;
     public ParenthesesNode cond;
 
-
+    public GotoNode toGoto;
     public DoWhileStatementNode(){
 
     }
