@@ -255,6 +255,7 @@ public class UnParser extends ASTVisitor {
                 a.accept(this);
             indentDown();
             printIndent();
+            printIndent();
             print("[");
                 n.size.accept(this);
             print("]");
