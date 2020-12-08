@@ -619,10 +619,21 @@ public class Parser extends ASTVisitor {
     }
     public void visit(IdentifierNode n){
         System.out.println(" In Identifier Node");
-        n.id= look.toString();
-        n.w=(Word)look;
-        if((IdentifierNode)top.get(n.w) != null){
-            n.type = top.get(n.w).type;
+        if(look.tag=='['){
+            n.ArrDims =  parseArrayAccessNode(n);
+            ((ArrayAccessNode)n.ArrDims).accept(this);
+            n.id= look.toString();
+            n.w = (Word)look;
+            if((IdentifierNode)top.get(n.w) != null){
+                n.type = top.get(n.w).type;
+            }
+        }
+        else{
+            n.id= look.toString();
+            n.w = (Word)look;
+            if((IdentifierNode)top.get(n.w) != null){
+                n.type = top.get(n.w).type;
+            }
         }
         System.out.println(" ********n.type"+n.type);
 
@@ -631,12 +642,7 @@ public class Parser extends ASTVisitor {
         }
          match(Tag.ID);
        
-        if(look.tag=='['){
-
-//             // had to parse
-           n.ArrDims =  parseArrayAccessNode(n);
-           ((ArrayAccessNode)n.ArrDims).accept(this);
-       }
+        
        
         // for(int i=0; i<level;i++){ System.out.print(indent); }
         n.printNode();
