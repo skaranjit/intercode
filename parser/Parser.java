@@ -236,7 +236,7 @@ public class Parser extends ASTVisitor {
                 ((BreakStatementNode)stmt).accept(this);
                 return stmt;
             case '{':
-                stmt = new BlockStatement();
+                stmt = new BlockStatement(enclosingBlock);
                 ((BlockStatement)stmt).accept(this);
             default:return null;
 
