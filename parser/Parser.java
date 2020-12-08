@@ -345,6 +345,7 @@ public class Parser extends ASTVisitor {
             while (getPrecedence(look.tag) > op)
             {
                 rhs = parseBinExprNode(rhs, getPrecedence(look.tag));
+                move();
             }
             lhs = new BinExprNode(token_op, lhs, rhs);
             lhs.type = rhs.type;
@@ -619,22 +620,16 @@ public class Parser extends ASTVisitor {
     }
     public void visit(IdentifierNode n){
         System.out.println(" In Identifier Node");
+        n.id= look.toString();
+        n.w = (Word)look;
+        if((IdentifierNode)top.get(n.w) != null){
+            n.type = top.get(n.w).type;
+        }
         if(look.tag=='['){
             n.ArrDims =  parseArrayAccessNode(n);
             ((ArrayAccessNode)n.ArrDims).accept(this);
-            n.id= look.toString();
-            n.w = (Word)look;
-            if((IdentifierNode)top.get(n.w) != null){
-                n.type = top.get(n.w).type;
-            }
         }
-        else{
-            n.id= look.toString();
-            n.w = (Word)look;
-            if((IdentifierNode)top.get(n.w) != null){
-                n.type = top.get(n.w).type;
-            }
-        }
+            
         System.out.println(" ********n.type"+n.type);
 
         if(look.tag!=Tag.ID){
