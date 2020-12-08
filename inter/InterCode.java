@@ -219,7 +219,7 @@ public class InterCode extends ASTVisitor {
             n.assigns.add(assign1);
         }
         n.assigns.add(assign);
-	    ((ParenNode)n.cond).expr = temp;
+        n.cond.expr= temp;
         n.falseLabel = LabelNode.newLabel();
 	    globalLabel = n.falseLabel;
         //n.stmt.accept(this);
@@ -255,7 +255,7 @@ public class InterCode extends ASTVisitor {
             n.assigns.add(assign1);
         }
         n.assigns.add(assign);
-	    	((ParenNode)n.cond).expr = temp;
+        n.cond.expr= temp;
 
         n.falseLabel = LabelNode.newLabel();
         println(" goto " + n.falseLabel.id);
