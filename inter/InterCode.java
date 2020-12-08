@@ -163,7 +163,6 @@ public class InterCode extends ASTVisitor {
         println("");
         System.out.println(" If Statementnode");
         n.cond.accept(this);
-        //BinassignList = new ArrayList<AssignmentNode>();
         IdentifierNode temp= TempNode.newTemp();
         ParenthesesNode cond=n.cond;
         ExprNode expr= null;
@@ -198,15 +197,12 @@ public class InterCode extends ASTVisitor {
         printIndent();
         println("");
         println("While Statement");
-        //BinassignList = new ArrayList<AssignmentNode>();
         n.startLabel = LabelNode.newLabel();
         n.cond.accept(this);
         IdentifierNode temp = TempNode.newTemp();
         ParenthesesNode cond=n.cond;
         ExprNode expr = null;
         if(cond.expr instanceof BinExprNode){
-            expr = (BinExprNode)cond.expr;
-    // 		//((BinExprNode)expr).accept(this);
             expr = BinassignList.get(BinassignList.size()-1).id;
         } else if(cond.expr instanceof TrueNode){
             expr=(TrueNode)cond.expr;
@@ -232,7 +228,6 @@ public class InterCode extends ASTVisitor {
         println("");
         println("do");
         indentUp();
-        //BinassignList = new ArrayList<AssignmentNode>();
         n.startLabel = LabelNode.newLabel();
         n.toGoto = new GotoNode(n.startLabel, n.stmt);
         n.toGoto.accept(this);
@@ -246,8 +241,6 @@ public class InterCode extends ASTVisitor {
         ParenthesesNode cond=n.cond;
         ExprNode expr = null;
         if(cond.expr instanceof BinExprNode){
-            expr = (BinExprNode)cond.expr;
-    // 		//((BinExprNode)expr).accept(this);
             expr = BinassignList.get(BinassignList.size()-1).id;
         } else if(cond.expr instanceof TrueNode){
             expr=(TrueNode)cond.expr;
@@ -302,12 +295,12 @@ public class InterCode extends ASTVisitor {
     public void visit(AssignmentNode n){
         printIndent();
         n.id.accept(this);
-        List<AssignmentNode> temp1 = new ArrayList<AssignmentNode>();
-	    temp1 = BinassignList;
+        // List<AssignmentNode> temp1 = new ArrayList<AssignmentNode>();
+	    // temp1 = BinassignList;
         print(" = ");
         n.right.accept(this);
         println(";");
-        BinassignList = temp1;
+        // BinassignList = temp1;
     }
 
     public void visit(BreakStatementNode n){
