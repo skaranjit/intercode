@@ -158,8 +158,9 @@ public class InterCode extends ASTVisitor {
 //         print(")");
     }
 
-    public void visit(IfStatementNode n){
-
+    public void visit(IfStatementNode n)
+    {
+        println("");
         System.out.println(" If Statementnode");
         n.cond.accept(this);
         //BinassignList = new ArrayList<AssignmentNode>();
@@ -195,6 +196,7 @@ public class InterCode extends ASTVisitor {
     
     public void visit(WhileStatementNode n){
         printIndent();
+        println("");
         println("While Statement");
         //BinassignList = new ArrayList<AssignmentNode>();
         n.startLabel = LabelNode.newLabel();
@@ -227,6 +229,7 @@ public class InterCode extends ASTVisitor {
 
     public void visit(DoWhileStatementNode n){
         printIndent();
+        println("");
         println("do");
         indentUp();
         //BinassignList = new ArrayList<AssignmentNode>();
