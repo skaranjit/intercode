@@ -126,7 +126,7 @@ public class UnParser extends ASTVisitor {
        //n.decls.accept(this);
         indentDown();
 
-        System.out.println(" Blockstatement");
+        println(" Blockstatement");
         for(DeclarationNode decl:n.decls)
             decl.accept(this);
 
@@ -227,13 +227,13 @@ public class UnParser extends ASTVisitor {
     public void visit(DoWhileStatementNode n){
          printIndent();
          
-        System.out.println("visiting DoWhileNode");
-        for (AssignmentNode assign : n.assigns)
-		    assign.accept(this);
+        println("visiting DO Statements");
         n.startLabel = LabelNode.newLabel();
         n.toGoto = new GotoNode(n.startLabel, n.stmt);
         n.toGoto.accept(this);
-        println(n.startLabel.id + ": Do Statement");
+        for (AssignmentNode assign : n.assigns)
+		    assign.accept(this);
+        println(n.startLabel.id + ": DoWhile");
          indentDown();
          printIndent();
          print("iffalse ");
