@@ -313,7 +313,7 @@ public class InterCode extends ASTVisitor {
     public void visit(BreakStatementNode n){
         printIndent();
         n.falseLabel = globalLabel;
-        println(" goto " + n.falseLabel);
+        println("Break: goto " + n.falseLabel.id);
     }
     public void visit(TrueNode n){
         print("true");
