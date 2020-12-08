@@ -276,6 +276,18 @@ public class InterCode extends ASTVisitor {
     public void visit(ArrayDimsNode n){
         print("[");
         n.size.accept(this);
+        IdentifierNode temp = TempNode.newTemp();
+        ExprNode expr = null;
+        if(n.size instanceof BinExprNode){
+            expr = (BinExprNode)n.size;
+    // 		//((BinExprNode)expr).accept(this);
+            expr = BinassignList.get(BinassignList.size()-1).id;  
+        }
+        else if(n.size instanceof IdentifierNode){
+            expr = ((IdentifierNode)n.size)
+        }else if(n.size instanceof NumNode){
+            expr= (NumNode)n.size;
+        }      
         print("]");
         if(n.dim!= null){
             n.dim.accept(this);
@@ -334,8 +346,6 @@ public class InterCode extends ASTVisitor {
             ((NumNode)n.left).accept(this);
         }else if(n.left instanceof RealNode){
             ((RealNode)n.left).accept(this);
-        }else if(n.left instanceof ArrayAccessNode){
-            ((ArrayAccessNode)n.left).accept(this);
         }else if(n.left instanceof BinExprNode){
             ((BinExprNode)n.left).accept(this);
         }else {
@@ -360,8 +370,6 @@ public class InterCode extends ASTVisitor {
                 ((NumNode)n.right).accept(this);
             }else if(n.right instanceof RealNode){
                 ((RealNode)n.right).accept(this);
-            }else if(n.right instanceof ArrayAccessNode){
-                ((ArrayAccessNode)n.right).accept(this);
             }else if(n.right instanceof BinExprNode){
                 ((BinExprNode)n.right).accept(this);
             }else {

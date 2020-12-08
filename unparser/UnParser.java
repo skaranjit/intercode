@@ -256,7 +256,6 @@ public class UnParser extends ASTVisitor {
             }
     }
 
-
     public void visit(AssignmentNode n){
         printIndent();
         n.id.accept(this);
@@ -277,10 +276,7 @@ public class UnParser extends ASTVisitor {
             ((FalseNode)n.right).accept(this);
         }else{
             ((BinExprNode)n.right).accept(this);
-
-        }
-        
-
+        }    
         println(";");           
     }
 
@@ -288,12 +284,15 @@ public class UnParser extends ASTVisitor {
         printIndent();
         println("break;");
     }
+
     public void visit(TrueNode n){
         print("true");
     }
+
     public void visit(FalseNode n){
         print("false");
     }
+
     public void visit(BinExprNode n){
         if(n.left instanceof ParenthesesNode){
             ((ParenthesesNode)n.left).accept(this);
@@ -310,15 +309,10 @@ public class UnParser extends ASTVisitor {
         }else {
 
         }
-
         if(n.op!=null){
             print(" "+ n.op.toString()+ " ");
-
         }
         if(n.right!=null){
-
-
-
             if(n.right instanceof ParenthesesNode){
                 ((ParenthesesNode)n.right).accept(this);
             }
@@ -334,13 +328,7 @@ public class UnParser extends ASTVisitor {
             }else {
 
             }
-
-
-
         }
-
-
-
     }
 
     public void visit(IdentifierNode n){
