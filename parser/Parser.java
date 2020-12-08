@@ -635,7 +635,7 @@ public class Parser extends ASTVisitor {
 
 //             // had to parse
            n.ArrDims =  parseArrayAccessNode(n);
-           ((ArrayAccessNode)n.ArrDims).accept(this)
+           ((ArrayAccessNode)n.ArrDims).accept(this);
        }
        
         // for(int i=0; i<level;i++){ System.out.print(indent); }
