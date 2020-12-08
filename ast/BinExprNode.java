@@ -12,7 +12,6 @@ public class BinExprNode extends ExprNode {
     public ExprNode right;
    // public Statements st;
     public Token op;
-    public List<AssignmentNode> assigns = new ArrayList<AssignmentNode>();
 
     public BinExprNode(){
 
