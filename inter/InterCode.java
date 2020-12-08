@@ -231,6 +231,7 @@ public class InterCode extends ASTVisitor {
 	    n.toGoto.accept(this);
        // n.stmt.accept(this);
     }
+
     public void visit(DoWhileStatementNode n){
         printIndent();
         println("do");
@@ -401,6 +402,7 @@ public class InterCode extends ASTVisitor {
     public void visit(TempNode n){
 
     }
+    
 
 
 
