@@ -6,8 +6,7 @@ import intercode.lexer.*;
 import intercode.parser.*;
 import intercode.typechecker.*;
 import intercode.visitor.*;
-import org.omg.PortableInterceptor.Interceptor;
-
+import intercode.inter.*;
 import java.io.*;
 import java.util.jar.Pack200;
 
