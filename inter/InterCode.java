@@ -377,9 +377,7 @@ public class InterCode extends ASTVisitor {
     //////// Visit method for Intermediate code
     ////
 
-    public void visit(GotoNode n){
-
-    }
+    
     public void visit(LabelNode n){
 
     }
