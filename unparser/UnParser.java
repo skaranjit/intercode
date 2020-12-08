@@ -271,13 +271,12 @@ public class UnParser extends ASTVisitor {
             ((RealNode)n.right).accept(this);
         }else if(n.right instanceof ArrayAccessNode){
             ((ArrayAccessNode)n.right).accept(this);
-        }else if(n.right instanceof BinExprNode){
-            ((BinExprNode)n.right).accept(this);
         }else if(n.right instanceof TrueNode){
             ((TrueNode)n.right).accept(this);
         }else if(n.right instanceof FalseNode){
             ((FalseNode)n.right).accept(this);
         }else{
+            ((BinExprNode)n.right).accept(this);
 
         }
         
