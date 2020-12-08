@@ -211,8 +211,10 @@ public class InterCode extends ASTVisitor {
             expr = (BinExprNode)cond.expr;
     // 		//((BinExprNode)expr).accept(this);
             expr = Bassigns.get(Bassigns.size()-1).left;
-        } else if (cond.expr instanceof BooleanNode){
-            expr = (BooleanNode)cond.node;
+        } else if(cond.expr instanceof TrueNode){
+            expr=(TrueNode)cond.expr;
+        }else if(cond.expr instanceof FalseNode){
+            expr=(FalseNode)cond.expr;
         }
         AssignmentNode assign = new AssignmentNode(temp, expr);
         for(AssignmentNode assign1 : BinassignList){
@@ -247,8 +249,10 @@ public class InterCode extends ASTVisitor {
             expr = (BinExprNode)cond.node;
     // 		//((BinExprNode)expr).accept(this);
             expr = Bassigns.get(Bassigns.size()-1).left;
-        } else if (cond.expr instanceof BooleanNode){
-            expr = (BooleanNode)cond.expr;
+        } else if(cond.expr instanceof TrueNode){
+            expr=(TrueNode)cond.expr;
+        }else if(cond.expr instanceof FalseNode){
+            expr=(FalseNode)cond.expr;
         }
 	AssignmentNode assign = new AssignmentNode(temp, expr);
         for(AssignmentNode assign1 : BinassignList){
