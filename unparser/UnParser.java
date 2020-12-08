@@ -224,9 +224,7 @@ public class UnParser extends ASTVisitor {
     }
     public void visit(DoWhileStatementNode n){
          printIndent();
-         
-        println("visiting DO Statements");
-        n.startLabel = LabelNode.newLabel();
+        println(n.startLabel.id + ": DoWhileStatement");
         n.toGoto = new GotoNode(n.startLabel, n.stmt);
         n.toGoto.accept(this);
         for (AssignmentNode assign : n.assigns)
