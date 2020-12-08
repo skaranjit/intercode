@@ -386,6 +386,9 @@ public class InterCode extends ASTVisitor {
 
     public void visit(IdentifierNode n){
         print(n.id);
+        if(n.array!=null){
+            
+        }
     }
     public void visit(NumNode n){
         print(""+n.value);
