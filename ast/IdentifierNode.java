@@ -8,7 +8,7 @@ public class IdentifierNode extends ExprNode {
     public String id;
     //public Statements block;
     public Word w;
-
+    public ExprNode ArrDims;
     public IdentifierNode(Word w, Type type) {
         this.id = w.lexeme;
         this.w = w;

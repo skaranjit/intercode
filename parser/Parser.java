@@ -631,11 +631,11 @@ public class Parser extends ASTVisitor {
             error(" Syntax error: Identifier or variable needed "+n.id);
         }
          match(Tag.ID);
-         ExprNode temp = null;
+       
         if(look.tag=='['){
 
 //             // had to parse
-           temp =  parseArrayAccessNode(n);
+           n.ArrDims =  parseArrayAccessNode(n);
        }
        
         // for(int i=0; i<level;i++){ System.out.print(indent); }
