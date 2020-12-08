@@ -199,7 +199,7 @@ public class InterCode extends ASTVisitor {
     
     public void visit(WhileStatementNode n){
         printIndent();
-        print("While Statement");
+        println("While Statement");
         //BinassignList = new ArrayList<AssignmentNode>();
         n.startLabel = LabelNode.newLabel();
         n.cond.accept(this);
@@ -242,6 +242,7 @@ public class InterCode extends ASTVisitor {
         //n.stmt.accept(this);
         indentDown();
         printIndent();
+        n.cond.accept(this);
         IdentifierNode temp = TempNode.newTemp();
         ParenthesesNode cond=n.cond;
         ExprNode expr = null;
