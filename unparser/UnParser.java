@@ -209,7 +209,6 @@ public class UnParser extends ASTVisitor {
     }
 
     public void visit(WhileStatementNode n){
-        printIndent();
         println(n.startLabel.id + ": WhileStatement");
         for (AssignmentNode assign : n.assigns)
 		    assign.accept(this);
