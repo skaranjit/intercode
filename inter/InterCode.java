@@ -315,7 +315,7 @@ public class InterCode extends ASTVisitor {
     public void visit(BreakStatementNode n){
         printIndent();
         n.falseLabel = globalLabel;
-        println("break;");
+        println(" goto " + n.falseLabel);
     }
     public void visit(TrueNode n){
         print("true");
