@@ -306,7 +306,13 @@ public class UnParser extends ASTVisitor {
             ((ParenthesesNode)n.left).accept(this);
         }
         if(n.left instanceof IdentifierNode){
-            ((IdentifierNode)n.left).accept(this);
+           if(((IdentifierNode)n.left).ArrDims != null){
+               ((IdentifierNode)n.left).ArrDims.accept(this);
+               n.left = ((ArrayAccessNode)((IdentifierNode)n.left).ArrDims).id;
+           }
+           else{
+               ((IdentifierNode)n.left).accept(this);
+           }
         }
         else if (n.left instanceof NumNode){
             ((NumNode)n.left).accept(this);
