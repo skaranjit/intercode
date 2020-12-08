@@ -139,7 +139,7 @@ public class Parser extends ASTVisitor {
         n.type.accept(this);
         //level--;
 
-        n.id = new IdentifierNode(w, type);
+        n.id = new IdentifierNode();
         n.id.type=n.type.basic;
         //level++;
         n.id.accept(this);

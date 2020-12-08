@@ -11,7 +11,7 @@ public class IdentifierNode extends ExprNode {
 
     public IdentifierNode(Word w, Type type) {
         this.id = w.lexeme;
-        this.w=w;
+        this.w = w;
         this.type=type;
         
     }
@@ -21,7 +21,7 @@ public class IdentifierNode extends ExprNode {
         this.id = w.lexeme ;
         this.w = w;
     }
-
+    
     public IdentifierNode() {
     }
 
