@@ -212,7 +212,7 @@ public class InterCode extends ASTVisitor {
         if(cond.expr instanceof BinExprNode){
             expr = (BinExprNode)cond.expr;
     // 		//((BinExprNode)expr).accept(this);
-            expr = BinassignList.get(Bassigns.size()-1).left;
+            expr = BinassignList.get(BinassignList.size()-1).left;
         } else if(cond.expr instanceof TrueNode){
             expr=(TrueNode)cond.expr;
         }else if(cond.expr instanceof FalseNode){
@@ -248,9 +248,9 @@ public class InterCode extends ASTVisitor {
         ParenthesesNode cond=n.cond;
         ExprNode expr = null;
         if(cond.expr instanceof BinExprNode){
-            expr = (BinExprNode)cond.node;
+            expr = (BinExprNode)cond.expr;
     // 		//((BinExprNode)expr).accept(this);
-            expr = BinassignList.get(Bassigns.size()-1).left;
+            expr = BinassignList.get(BinassignList.size()-1).left;
         } else if(cond.expr instanceof TrueNode){
             expr=(TrueNode)cond.expr;
         }else if(cond.expr instanceof FalseNode){
