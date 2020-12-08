@@ -254,6 +254,7 @@ public class UnParser extends ASTVisitor {
             for(AssignmentNode a : n.assigns)
                 a.accept(this);
             indentDown();
+            printIndent();
             print("[");
                 n.size.accept(this);
             print("]");
