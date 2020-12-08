@@ -385,10 +385,6 @@ public class Parser extends ASTVisitor {
         {
             rhs_assign = new IdentifierNode();
             ((IdentifierNode)rhs_assign).accept(this);
-	    // if(look.tag=='['){
-        //         //***PROBLEM***// ((IdentifierNode)n.expr)
-        //         rhs_assign=parseArrayAccessNode((IdentifierNode)rhs_assign);
-        //     }
         }
         else if (look.tag == Tag.NUM)
         {
@@ -639,6 +635,7 @@ public class Parser extends ASTVisitor {
 
 //             // had to parse
            n.ArrDims =  parseArrayAccessNode(n);
+           ((ArrayAccessNode)n.ArrDims).accept(this)
        }
        
         // for(int i=0; i<level;i++){ System.out.print(indent); }
