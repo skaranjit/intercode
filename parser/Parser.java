@@ -190,22 +190,6 @@ public class Parser extends ASTVisitor {
         }
     }
 
-    /*public void visit(Statements n){
-        System.out.println(" In Statements Node");
-         if (!look.toString().equals("}") && look.tag != Tag.EOF)  {
-
-           // level ++;
-            n.stmt=parseStatementNode();
-            //level--;
-            if (n.stmt!=null){n.stmts= new Statements();
-            //level++;
-            n.stmts.accept(this);}
-                               
-           // level--;
-
-        }
-
-    }*/
     public StatementNode parseStatementNode(){
       //  for(int i=0;i<level;i++){System.out.println(indent);}
         System.out.println(" look in parseStatement is "+look.toString());
@@ -326,6 +310,7 @@ public class Parser extends ASTVisitor {
     ExprNode parseBinExprNode(ExprNode lhs, int precedence){
 	while (getPrecedence(look.tag) >= precedence)
         {
+            System.out.println("InParseBinExprNode");
             Token token_op = look;
             int op = getPrecedence(look.tag);
             move();
