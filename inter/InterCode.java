@@ -169,22 +169,18 @@ public class InterCode extends ASTVisitor {
         if(cond.expr instanceof BinExprNode){
             expr=(BinExprNode)cond.expr;
             expr = (BinExprNode)cond.expr;
-
         }else if(cond.expr instanceof TrueNode){
             expr=(TrueNode)cond.expr;
         }else if(cond.expr instanceof FalseNode){
             expr=(FalseNode)cond.expr;
         }
-
         AssignmentNode assign= new AssignmentNode(temp,expr);
         for (AssignmentNode a : BinassignList){
             n.assigns.add(a);
         }
         n.assigns.add(assign);
-
         // replace n.cond with temp
         n.cond.expr= temp;
-
         // create truelabel and falselabel
         n.falseLabel=LabelNode.newLabel();
         //n.stmt.accept(this);
@@ -275,19 +271,23 @@ public class InterCode extends ASTVisitor {
     }
     public void visit(ArrayDimsNode n){
         print("[");
-        n.size.accept(this);
+        //n.size.accept(this);
         IdentifierNode temp = TempNode.newTemp();
         ExprNode expr = null;
         if(n.size instanceof BinExprNode){
-            expr = (BinExprNode)n.size;
-    // 		//((BinExprNode)expr).accept(this);
             expr = BinassignList.get(BinassignList.size()-1).id;  
         }
         else if(n.size instanceof IdentifierNode){
             expr = ((IdentifierNode)n.size);
         }else if(n.size instanceof NumNode){
             expr= (NumNode)n.size;
-        }      
+        }
+        AssignmentNode assign= new AssignmentNode(temp,expr);
+        for(AssignmentNode assign1 : BinassignList){
+            n.assigns.add(assign1);
+        }
+        n.assigns.add(assign);
+        n.size = temp;
         print("]");
         if(n.dim!= null){
             n.dim.accept(this);
@@ -300,26 +300,8 @@ public class InterCode extends ASTVisitor {
         n.id.accept(this);
         List<AssignmentNode> temp1 = new ArrayList<AssignmentNode>();
 	    temp1 = BinassignList;
-	    //BinassignList = new ArrayList<AssignmentNode>();
         print(" = ");
         n.right.accept(this);
-        // if(n.right instanceof ParenthesesNode){
-        //     ((ParenthesesNode)n.right).accept(this);
-        // }
-        // if(n.right instanceof IdentifierNode){
-        //     ((IdentifierNode)n.right).accept(this);
-        // }
-        // else if (n.right instanceof NumNode){
-        //     ((NumNode)n.right).accept(this);
-        // }else if(n.right instanceof RealNode){
-        //     ((RealNode)n.right).accept(this);
-        // }else if(n.right instanceof ArrayAccessNode){
-        //     ((ArrayAccessNode)n.right).accept(this);
-        // }else if(n.right instanceof BinExprNode){
-        //     ((BinExprNode)n.right).accept(this);
-        // }
-
-
         println(";");
         BinassignList = temp1;
     }
@@ -351,15 +333,10 @@ public class InterCode extends ASTVisitor {
         }else {
 
         }
-
         if(n.op!=null){
             print(" "+ n.op.toString()+ " ");
-
         }
         if(n.right!=null){
-
-
-
             if(n.right instanceof ParenthesesNode){
                 ((ParenthesesNode)n.right).accept(this);
             }
@@ -375,9 +352,6 @@ public class InterCode extends ASTVisitor {
             }else {
 
             }
-
-
-
         }
         if(n.left != null){
             IdentifierNode temp = TempNode.newTemp();
@@ -387,16 +361,12 @@ public class InterCode extends ASTVisitor {
             lhs = temp;
             BinassignList.add(assign);
         }
-
-
-
     }
 
     public void visit(IdentifierNode n){
         print(n.id);
         if(n.ArrDims != null)
             ((ArrayAccessNode)n.ArrDims).accept(this); 
-       
     }
     public void visit(NumNode n){
         print(""+n.value);
