@@ -185,6 +185,7 @@ public class TypeChecker extends ASTVisitor {
             ((RealNode)n.right).accept(this);
         }else if(n.right instanceof ArrayAccessNode){
             ((ArrayAccessNode)n.right).accept(this);
+            n.right.type = leftType;
         }else if(n.right instanceof ParenthesesNode){
             ((ParenthesesNode)n.right).accept(this);
         }else{
