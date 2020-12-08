@@ -291,7 +291,7 @@ public class Parser extends ASTVisitor {
             n.expr = rhs_assign;
         }
         else
-            n.expr = (BinExprNode)parseBinExprNode(rhs_assign, 0);
+            n.expr = (BinExprNode)parseBinExprNode((ExprNode)rhs_assign, 0);
 
         match(')');
         n.type = rhs_assign.type;
