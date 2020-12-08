@@ -399,7 +399,7 @@ public class Parser extends ASTVisitor {
         ExprNode rhs_assign = null;
         if (look.tag == Tag.ID)
         {
-            rhs_assign = new IdentifierNode(w, type);
+            rhs_assign = new IdentifierNode();
             ((IdentifierNode)rhs_assign).accept(this);
 	    // if(look.tag=='['){
         //         //***PROBLEM***// ((IdentifierNode)n.expr)
