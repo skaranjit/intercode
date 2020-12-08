@@ -386,6 +386,8 @@ public class InterCode extends ASTVisitor {
 
     public void visit(IdentifierNode n){
         print(n.id);
+        if(n.ArrDims != null)
+            ((ArrayAccessNode)n.ArrDims).accept(this); 
        
     }
     public void visit(NumNode n){

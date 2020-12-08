@@ -258,6 +258,8 @@ public class TypeChecker extends ASTVisitor {
 
         if(n.type == null){ error("Variable: " + n.id + " not declared." );} 
         println(n.id);
+        if(n.ArrDims != null)
+            ((ArrayAccessNode)n.ArrDims).accept(this); 
     }
     public void visit(NumNode n){
         n.printNode();
