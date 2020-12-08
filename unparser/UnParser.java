@@ -226,14 +226,19 @@ public class UnParser extends ASTVisitor {
     }
     public void visit(DoWhileStatementNode n){
          printIndent();
-         println("do");
-         indentUp();
-         n.stmt.accept(this);
+        System.out.println("visiting DoWhileNode");
+        n.startLabel = LabelNode.newLabel();
+        n.toGoto = new GotoNode(n.startLabel, n.stmt);
+        n.toGoto.accept(this);
+        println(n.startLabel
          indentDown();
          printIndent();
-         print("while (");
+         print("iffalse ");
          n.cond.accept(this);
-         println(");");
+         println(" goto " + n.falseLabel.id);
+      
+         println("goto "+n.startLabel.id);
+         println(n.falseLabel.id+":");
     }
 
     public void visit(ArrayAccessNode n){
