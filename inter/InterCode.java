@@ -162,7 +162,7 @@ public class InterCode extends ASTVisitor {
 
         System.out.println(" If Statementnode");
         n.cond.accept(this);
-        BinassignList = new ArrayList<AssignmentNode>();
+        //BinassignList = new ArrayList<AssignmentNode>();
         IdentifierNode temp= TempNode.newTemp();
         ParenthesesNode cond=n.cond;
         ExprNode expr= null;
@@ -288,7 +288,7 @@ public class InterCode extends ASTVisitor {
         n.id.accept(this);
         List<AssignmentNode> temp1 = new ArrayList<AssignmentNode>();
 	    temp1 = BinassignList;
-	    BinassignList = new ArrayList<AssignmentNode>();
+	    //BinassignList = new ArrayList<AssignmentNode>();
         print(" = ");
         n.right.accept(this);
         // if(n.right instanceof ParenthesesNode){
