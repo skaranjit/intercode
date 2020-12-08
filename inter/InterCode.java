@@ -270,7 +270,7 @@ public class InterCode extends ASTVisitor {
     }
 
     public void visit(ArrayAccessNode n){
-        n.id.accept(this);
+        //n.id.accept(this);
         n.index.accept(this);
     }
     public void visit(ArrayDimsNode n){
