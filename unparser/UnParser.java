@@ -355,7 +355,7 @@ public class UnParser extends ASTVisitor {
         print(" "+n.value);
     }
     public void visit(GotoNode n){
-        n.stmt.accept(this)
+        n.stmt.accept(this);
     }
 
 }
