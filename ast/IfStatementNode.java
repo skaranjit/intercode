@@ -14,11 +14,6 @@ public class IfStatementNode extends StatementNode {
     public StatementNode else_stmt;
 
 
-    // AssignmentNode which will be added before IFStatement for intermediate code
-    public List<AssignmentNode> assigns= new ArrayList<AssignmentNode>();
-
-    // label for intermediate code
-    public LabelNode falseLabel;
 
     public IfStatementNode(){}
 

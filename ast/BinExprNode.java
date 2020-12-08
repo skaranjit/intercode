@@ -2,6 +2,8 @@ package intercode.ast;
 
 import intercode.lexer.Token;
 import intercode.visitor.ASTVisitor;
+import java.util.*;
+import intercode.inter.*;
 
 
 public class BinExprNode extends ExprNode {
@@ -10,6 +12,8 @@ public class BinExprNode extends ExprNode {
     public ExprNode right;
    // public Statements st;
     public Token op;
+    public List<AssignmentNode> assigns = new ArrayList<AssignmentNode>();
+
     public BinExprNode(){
 
     }

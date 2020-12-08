@@ -1,13 +1,14 @@
 package intercode.ast;
 
 import intercode.visitor.ASTVisitor;
-
+import intercode.inter.*;
+import java.util.*;
 public class WhileStatementNode extends StatementNode {
 
 
     public ParenthesesNode cond;
     public StatementNode stmt;
-
+    
     public WhileStatementNode(){
 
     }
