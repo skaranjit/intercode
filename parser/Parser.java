@@ -292,7 +292,7 @@ public class Parser extends ASTVisitor {
         }
         else{
             n.expr = rhs_assign;
-            n.expr = (BinExprNode) parseBinExprNode(n.expr,0);
+            n.expr = (ExprNode) parseBinExprNode(n.expr,0);
         }
 
         match(')');
@@ -488,49 +488,49 @@ public class Parser extends ASTVisitor {
         match(';');
     }
 
-    public void visit ( BinExprNode n) {
+    public void visit (BinExprNode n) {
         // (i[a]+j)
         //  for(int i=0; i<level;i++){ System.out.print(indent); }
-        System.out.println(" In BinExprNode");
-//
-       if (look.tag == '(') {
-           n.left = new ParenthesesNode();
-           //     level++;
-           ((ParenthesesNode) n.left).accept(this);
-           //   level--;
-       } else if (look.tag == Tag.ID) {
-           n.left = new IdentifierNode();
-           // level++;
-           ((IdentifierNode) n.left).accept(this);
-           //level--;
+//         System.out.println(" In BinExprNode");
+// //
+//        if (look.tag == '(') {
+//            n.left = new ParenthesesNode();
+//            //     level++;
+//            ((ParenthesesNode) n.left).accept(this);
+//            //   level--;
+//        } else if (look.tag == Tag.ID) {
+//            n.left = new IdentifierNode();
+//            // level++;
+//            ((IdentifierNode) n.left).accept(this);
+//            //level--;
 
-        //    if (look.tag == '[') {
-        //        n.left = parseArrayAccessNode(((IdentifierNode) n.left));
-        //    }
-       } else if (look.tag == Tag.NUM) {
-           n.left = new NumNode();
-           //level++;
-           ((NumNode) n.left).accept(this);
-           //level--;
-       } else if (look.tag == Tag.REAL) {
-           n.left = new RealNode();
-           //level++;
-           ((RealNode) n.left).accept(this);
-           //level--;
+//         //    if (look.tag == '[') {
+//         //        n.left = parseArrayAccessNode(((IdentifierNode) n.left));
+//         //    }
+//        } else if (look.tag == Tag.NUM) {
+//            n.left = new NumNode();
+//            //level++;
+//            ((NumNode) n.left).accept(this);
+//            //level--;
+//        } else if (look.tag == Tag.REAL) {
+//            n.left = new RealNode();
+//            //level++;
+//            ((RealNode) n.left).accept(this);
+//            //level--;
 
-       }
+//        }
 
 
-       //for(int i=0; i<level;i++){ System.out.print(indent); }
-       System.out.println(" &&&& BinExpr In operator" + look);
-       System.out.println(" &&&& BinExpr n.left" + n.left);
+//        //for(int i=0; i<level;i++){ System.out.print(indent); }
+//        System.out.println(" &&&& BinExpr In operator" + look);
+//        System.out.println(" &&&& BinExpr n.left" + n.left);
 
-        //level++;
-        // Build AST for binary expression with the operator precedence
-       BinExprNode binary = (BinExprNode) parseBinExprNode(n.left, 0);
-       n.op = binary.op;
-       n.right = binary.right;
-       // level--;*/
+//         //level++;
+//         // Build AST for binary expression with the operator precedence
+//        BinExprNode binary = (BinExprNode) parseBinExprNode(n.left, 0);
+//        n.op = binary.op;
+//        n.right = binary.right;
+//        // level--;*/
     }
     public void visit(ArrayAccessNode n){
 
