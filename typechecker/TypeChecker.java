@@ -133,7 +133,7 @@ public class TypeChecker extends ASTVisitor {
         println(" ArrayDimsnOde");
         if(n.size instanceof IdentifierNode){
             
-                ((IdentifierNode)n.size).accept(this)
+                ((IdentifierNode)n.size).accept(this);
                
             
             if (n.size.type != Type.Int) error("Needs to be integer only");
