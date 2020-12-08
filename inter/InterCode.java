@@ -326,7 +326,13 @@ public class InterCode extends ASTVisitor {
             ((ParenthesesNode)n.left).accept(this);
         }
         if(n.left instanceof IdentifierNode){
-           
+           if(((IdentifierNode)n.left).ArrDims != null){
+               ((IdentifierNode)n.left).ArrDims.accept(this);
+               n.left = n.left.id;
+           }
+           else{
+               ((IdentifierNode)n.left).accept(this);
+           }
         }
         else if (n.left instanceof NumNode){
             ((NumNode)n.left).accept(this);
