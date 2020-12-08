@@ -284,7 +284,7 @@ public class InterCode extends ASTVisitor {
             expr = BinassignList.get(BinassignList.size()-1).id;  
         }
         else if(n.size instanceof IdentifierNode){
-            expr = ((IdentifierNode)n.size)
+            expr = ((IdentifierNode)n.size);
         }else if(n.size instanceof NumNode){
             expr= (NumNode)n.size;
         }      
