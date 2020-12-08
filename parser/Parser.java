@@ -346,6 +346,7 @@ public class Parser extends ASTVisitor {
                 rhs = parseBinExprNode(rhs, getPrecedence(look.tag));
             }
             lhs = new BinExprNode(token_op, lhs, rhs);
+            lhs.type = rhs.type;
         }
         return lhs;
     }
