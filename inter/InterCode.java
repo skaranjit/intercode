@@ -168,6 +168,8 @@ public class InterCode extends ASTVisitor {
         ExprNode expr= null;
         if(cond.expr instanceof BinExprNode){
             expr=(BinExprNode)cond.expr;
+            expr = (BinExprNode)cond.expr;
+
         }else if(cond.expr instanceof TrueNode){
             expr=(TrueNode)cond.expr;
         }else if(cond.expr instanceof FalseNode){
@@ -205,12 +207,12 @@ public class InterCode extends ASTVisitor {
         n.startLabel = LabelNode.newLabel();
         n.cond.accept(this);
         IdentifierNode temp = TempNode.newTemp();
-        ParenNode cond = (ParenNode)n.cond;
+        ParenthesesNode cond=n.cond;
         ExprNode expr = null;
         if(cond.expr instanceof BinExprNode){
             expr = (BinExprNode)cond.expr;
     // 		//((BinExprNode)expr).accept(this);
-            expr = Bassigns.get(Bassigns.size()-1).left;
+            expr = BinassignList.get(Bassigns.size()-1).left;
         } else if(cond.expr instanceof TrueNode){
             expr=(TrueNode)cond.expr;
         }else if(cond.expr instanceof FalseNode){
@@ -243,12 +245,12 @@ public class InterCode extends ASTVisitor {
         indentDown();
         printIndent();
         IdentifierNode temp = TempNode.newTemp();
-        ParenNode cond = (ParenNode)n.cond;
+        ParenthesesNode cond=n.cond;
         ExprNode expr = null;
         if(cond.expr instanceof BinExprNode){
             expr = (BinExprNode)cond.node;
     // 		//((BinExprNode)expr).accept(this);
-            expr = Bassigns.get(Bassigns.size()-1).left;
+            expr = BinassignList.get(Bassigns.size()-1).left;
         } else if(cond.expr instanceof TrueNode){
             expr=(TrueNode)cond.expr;
         }else if(cond.expr instanceof FalseNode){
