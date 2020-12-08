@@ -342,13 +342,10 @@ public class UnParser extends ASTVisitor {
     }
 
     public void visit(IdentifierNode n){
-        
+        print(n.id);
         if(n.ArrDims != null)
             ((ArrayAccessNode)n.ArrDims).accept(this);
-        else {
-            n = new IdentifierNode(n.id.w,n.id.type);
-            print(n.id);
-        }
+       
     }
     public void visit(NumNode n){
         print(""+n.value);
