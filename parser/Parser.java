@@ -627,7 +627,7 @@ public class Parser extends ASTVisitor {
         }
         if(look.tag=='['){
             n.ArrDims =  parseArrayAccessNode(n);
-            ((ArrayAccessNode)n.ArrDims).accept(this);
+            //((ArrayAccessNode)n.ArrDims).accept(this);
         }
             
         System.out.println(" ********n.type"+n.type);
