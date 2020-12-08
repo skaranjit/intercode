@@ -290,7 +290,7 @@ public class UnParser extends ASTVisitor {
 
     public void visit(BreakStatementNode n){
         printIndent();
-        println("break;");
+        println(" goto " + n.falseLabel);
     }
 
     public void visit(TrueNode n){
