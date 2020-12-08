@@ -382,7 +382,7 @@ public class Parser extends ASTVisitor {
     public void visit(AssignmentNode n){
      //   for(int i=0; i<level;i++){ System.out.print(indent); }
         System.out.println(" In Assignment Node");
-        n.id = new IdentifierNode;
+        n.id = new IdentifierNode();
         (n.id).accept(this);
 	// ExprNode lhs = null;
 	// if(look.tag=='['){
