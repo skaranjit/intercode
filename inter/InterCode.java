@@ -205,13 +205,13 @@ public class InterCode extends ASTVisitor {
         n.startLabel = LabelNode.newLabel();
         n.cond.accept(this);
         IdentifierNode temp = TempNode.newTemp();
-        ParenNode cond = (ParenNode)n.condition;
+        ParenNode cond = (ParenNode)n.cond;
         ExprNode expr = null;
-        if(cond.node instanceof BinExprNode){
-            expr = (BinExprNode)cond.node;
+        if(cond.expr instanceof BinExprNode){
+            expr = (BinExprNode)cond.expr;
     // 		//((BinExprNode)expr).accept(this);
             expr = Bassigns.get(Bassigns.size()-1).left;
-        } else if (cond.node instanceof BooleanNode){
+        } else if (cond.expr instanceof BooleanNode){
             expr = (BooleanNode)cond.node;
         }
         AssignmentNode assign = new AssignmentNode(temp, expr);
@@ -219,7 +219,7 @@ public class InterCode extends ASTVisitor {
             n.assigns.add(assign1);
         }
         n.assigns.add(assign);
-	    ((ParenNode)n.condition).node = temp;
+	    ((ParenNode)n.cond).expr = temp;
         n.falseLabel = LabelNode.newLabel();
 	    globalLabel = n.falseLabel;
         //n.stmt.accept(this);
@@ -241,21 +241,21 @@ public class InterCode extends ASTVisitor {
         indentDown();
         printIndent();
         IdentifierNode temp = TempNode.newTemp();
-        ParenNode cond = (ParenNode)n.condition;
+        ParenNode cond = (ParenNode)n.cond;
         ExprNode expr = null;
-        if(cond.node instanceof BinExprNode){
+        if(cond.expr instanceof BinExprNode){
             expr = (BinExprNode)cond.node;
     // 		//((BinExprNode)expr).accept(this);
             expr = Bassigns.get(Bassigns.size()-1).left;
-        } else if (cond.node instanceof BooleanNode){
-            expr = (BooleanNode)cond.node;
+        } else if (cond.expr instanceof BooleanNode){
+            expr = (BooleanNode)cond.expr;
         }
 	AssignmentNode assign = new AssignmentNode(temp, expr);
         for(AssignmentNode assign1 : BinassignList){
             n.assigns.add(assign1);
         }
         n.assigns.add(assign);
-	    	((ParenNode)n.condition).node = temp;
+	    	((ParenNode)n.cond).expr = temp;
 
         n.falseLabel = LabelNode.newLabel();
         println(" goto " + n.falseLabel.id);
