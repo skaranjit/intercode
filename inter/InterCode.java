@@ -1,39 +1,43 @@
-package assign7.intercode;
+package intercode.inter;
 
-import assign7.ast.*;
-import assign7.visitor.*;
-import assign7.parser.*;
-import assign7.lexer.*;
-import assign7.typechecker.*;
-import java.io.*;
+import intercode.ast.*;
+import intercode.parser.Parser;
+import intercode.typechecker.TypeChecker;
+import intercode.visitor.ASTVisitor;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
+public class InterCode extends ASTVisitor {
 
-public class InterCodeGen extends ASTVisitor {
-    public TypeChecker checker = null;
-    public CompilationUnit cu = null;
-    ExprNode bR = null;
-    ExprNode temp1 = null;
+    public TypeChecker checker= null;
+   
+    //public Parser parser;
+    public CompilationUnit cu= null;
+    //List of Assignments for the Binary Expressions.
+    public List<AssignmentNode> BinassignList = new ArrayList<AssignmentNode>();
+    ExprNode lhs = null;
     ExprNode last = null;
-    int Count = 0;
-    public List<AssignmentNode> Bassigns = new ArrayList<AssignmentNode>();
-    IdentifierNode a = null;
-    int level = 0;
-    public LabelNode globalLabel;
+    ExprNode temp1 = null;
+    //For Break Statement Node:
+    private LabelNode globalLabel;
+    int level=0;
+   // String indent="...";
 
-    public Env top = null;
 
-    public InterCodeGen(TypeChecker checker)
+   public InterCode(TypeChecker checker)
     {
             this.checker = checker;
             this.cu = checker.cu;
             visit(cu);
     }
-    public InterCodeGen()
+    public InterCode()
     {
             visit(this.checker.cu);
     }
 
-  //////////////////////////////////////////////////////////////////////////////////////////////////
+ //////////////////////////////////////////////////////////////////////////////////////////////////
   ////                                                                                          ////
   ////                                    UTILITY METHODS                                      //// 
   ////                                                                                         ////
@@ -85,314 +89,311 @@ public class InterCodeGen extends ASTVisitor {
         print(s);
     }
 
-  
-
+    ////////////////////////////////////////////////////////////////////////////
+///////             Utility Methods Ends                         ///////////
+///////////////////////////////////////////////////////////////////////////
     public void visit (CompilationUnit n)
     {
         println("Intercode Generator starts");
 
         n.block.accept(this);
-	println("*************End of the InterCode Generator*************");
+        println("*************End of the InterCode Generator*************");
     }
 
-    public void visit (BlockStatementNode n)
+    public void visit (BlockStatement n)
     {
 	    
 	for(DeclarationNode decl : n.decls)
 	     decl.accept(this);
 	for(StatementNode stmt : n.stmts){
-		 	Bassigns = new ArrayList<AssignmentNode>();
-
-	     stmt.accept(this);
+		BinassignList = new ArrayList<AssignmentNode>();
+	    stmt.accept(this);
 	}
     }
 
-    public void visit(DeclarationNode n)
-    {
+    /* public void visit(Declarations n){
+         if(n.decls!=null){
+             n.decl.accept(this);
+             n.decls.accept(this);
+         }
+     }*/
+    public void visit(DeclarationNode n){
+
         n.type.accept(this);
-	n.id.type =n.type.basic;
-	
+        print(" ");
         n.id.accept(this);
-	println("");
+        println(";");
+
+
     }
 
-    public void visit(TypeNode n)
-    {
-        print(" "+n.basic);
-        if(n.array != null)
-        {
+    public void visit(TypeNode n){
+        printIndent();
+        print(n.basic.toString());
+        if(n.array!=null){
             n.array.accept(this);
         }
     }
+    public void visit(ArrayTypeNode n){
+        print("[");
+        print(""+n.size);
+        print("]");
 
-    
-    public void visit(ParenNode n) {
-	n.node.accept(this);
-	    
-    }
-
-    public void visit(ConditionalNode n)
-    {
-	println("IfStatementNode");
-        n.condition.accept(this);
-	IdentifierNode temp = TempNode.newTemp();
-	ParenNode cond = (ParenNode)n.condition;
-	ExprNode expr = null;
-	if(cond.node instanceof BinExprNode){
-		expr = Bassigns.get(Bassigns.size()-1).left;
-	} else if (cond.node instanceof BooleanNode){
-		expr = (BooleanNode)cond.node;
-	}
-	AssignmentNode assign = new AssignmentNode(temp, expr);
- 	for(AssignmentNode assign1 : Bassigns){
-         n.assigns.add(assign1);
-     }
-	n.assigns.add(assign);
-	((ParenNode)n.condition).node = temp;
-	n.falseLabel = LabelNode.newLabel();
-    	//n.stmt.accept(this);
-    	n.toGoto = new GotoNode(n.falseLabel, n.stmt);
-	n.toGoto.accept(this);
-// 	Bassigns = Bassigns1;
-	if (n.elseStmt != null)
-        {
-            print("Else Clause");
-            n.elseStmt.accept(this);
+        if(n.type!=null){
+            n.type.accept(this);
         }
     }
-    
-    public void visit(GotoNode n){
-	   n.stmt.accept(this);
+
+    /*public void visit(Statements n){
+        if(n.stmts!=null){
+            n.stmt.accept(this);
+            n.stmts.accept(this);
+        }
+    }*/
+
+
+    public void visit(ParenthesesNode n){
+//         print("(");
+        (n.expr).accept(this);
+//         print(")");
     }
-    public void visit(WhileNode n)
+
+    public void visit(IfStatementNode n)
     {
-        System.out.println("WhileStatement");
-        Bassigns = new ArrayList<AssignmentNode>();
+        println("");
+        System.out.println(" If Statementnode");
+        n.cond.accept(this);
+        IdentifierNode temp= TempNode.newTemp();
+        ParenthesesNode cond=n.cond;
+        ExprNode expr= null;
+        if(cond.expr instanceof BinExprNode){
+            expr=(BinExprNode)cond.expr;
+            expr = (BinExprNode)cond.expr;
+        }else if(cond.expr instanceof TrueNode){
+            expr=(TrueNode)cond.expr;
+        }else if(cond.expr instanceof FalseNode){
+            expr=(FalseNode)cond.expr;
+        }
+        AssignmentNode assign= new AssignmentNode(temp,expr);
+        for (AssignmentNode a : BinassignList){
+            n.assigns.add(a);
+        }
+        n.assigns.add(assign);
+        // replace n.cond with temp
+        n.cond.expr= temp;
+        // create truelabel and falselabel
+        n.falseLabel=LabelNode.newLabel();
+        //n.stmt.accept(this);
+        n.toGoto = new GotoNode(n.falseLabel,n.stmt);
+        n.toGoto.accept(this);
+        if(n.else_stmt!=null){
+            println(" Else Clause");
+            n.else_stmt.accept(this);
+        }
+
+    }
+    
+    public void visit(WhileStatementNode n){
+        printIndent();
+        println("");
+        println("While Statement");
         n.startLabel = LabelNode.newLabel();
-        n.condition.accept(this);
+        n.cond.accept(this);
         IdentifierNode temp = TempNode.newTemp();
-        ParenNode cond = (ParenNode)n.condition;
+        ParenthesesNode cond=n.cond;
         ExprNode expr = null;
-        if(cond.node instanceof BinExprNode){
-            expr = (BinExprNode)cond.node;
-    // 		//((BinExprNode)expr).accept(this);
-            expr = Bassigns.get(Bassigns.size()-1).left;
-        } else if (cond.node instanceof BooleanNode){
-            expr = (BooleanNode)cond.node;
+        if(cond.expr instanceof BinExprNode){
+            expr = BinassignList.get(BinassignList.size()-1).id;
+        } else if(cond.expr instanceof TrueNode){
+            expr=(TrueNode)cond.expr;
+        }else if(cond.expr instanceof FalseNode){
+            expr=(FalseNode)cond.expr;
         }
         AssignmentNode assign = new AssignmentNode(temp, expr);
-        for(AssignmentNode assign1 : Bassigns){
+        for(AssignmentNode assign1 : BinassignList){
             n.assigns.add(assign1);
         }
         n.assigns.add(assign);
-	    	((ParenNode)n.condition).node = temp;
-
+        n.cond.expr= temp;
         n.falseLabel = LabelNode.newLabel();
-	globalLabel = n.falseLabel;
+	    globalLabel = n.falseLabel;
+        //n.stmt.accept(this);
         n.toGoto = new GotoNode(n.falseLabel, n.stmt);
-	n.toGoto.accept(this);
+	    n.toGoto.accept(this);
        // n.stmt.accept(this);
     }
 
-    public void visit(DoWhileNode n)
-    {
-        System.out.println("visiting DoWhileNode");
+    public void visit(DoWhileStatementNode n){
+        printIndent();
+        println("");
+        println("do");
+        indentUp();
         n.startLabel = LabelNode.newLabel();
         n.toGoto = new GotoNode(n.startLabel, n.stmt);
         n.toGoto.accept(this);
         println(n.startLabel.id + ": ");
         print("iffalse ");
-        n.condition.accept(this);
-	IdentifierNode temp = TempNode.newTemp();
-        ParenNode cond = (ParenNode)n.condition;
+        //n.stmt.accept(this);
+        indentDown();
+        printIndent();
+        n.cond.accept(this);
+        IdentifierNode temp = TempNode.newTemp();
+        ParenthesesNode cond=n.cond;
         ExprNode expr = null;
-        if(cond.node instanceof BinExprNode){
-            expr = Bassigns.get(Bassigns.size()-1).left;
-        } else if (cond.node instanceof BooleanNode){
-            expr = (BooleanNode)cond.node;
+        if(cond.expr instanceof BinExprNode){
+            expr = BinassignList.get(BinassignList.size()-1).id;
+        } else if(cond.expr instanceof TrueNode){
+            expr=(TrueNode)cond.expr;
+        }else if(cond.expr instanceof FalseNode){
+            expr=(FalseNode)cond.expr;
+        
         }
 	AssignmentNode assign = new AssignmentNode(temp, expr);
-        for(AssignmentNode assign1 : Bassigns){
+        for(AssignmentNode assign1 : BinassignList){
             n.assigns.add(assign1);
         }
         n.assigns.add(assign);
-	    	((ParenNode)n.condition).node = temp;
+        n.cond.expr= temp;
 
         n.falseLabel = LabelNode.newLabel();
         println(" goto " + n.falseLabel.id);
         println("goto "+n.startLabel.id);
-
-
-    }
-
-    public void visit (ArrayIDNode n)
-    {
-        System.out.println("visiting ArrayIDNode");
-	List<AssignmentNode> temp1 = new ArrayList<AssignmentNode>();
-	temp1 = Bassigns;
-	Bassigns = new ArrayList<AssignmentNode>();
-	IdentifierNode temp = TempNode.newTemp();
-	n.node.accept(this);
-        ExprNode expr = null;
-        if(n.node instanceof BinExprNode){
-            expr = Bassigns.get(Bassigns.size()-1).left;
-        } else if (n.node instanceof NumNode){
-            expr = (NumNode)n.node;
-        }else if (n.node instanceof IdentifierNode){
-            expr = (IdentifierNode)n.node;
-        }
-	AssignmentNode assign = new AssignmentNode(temp, expr);
-        for(AssignmentNode assign1 : Bassigns){
-            n.assigns.add(assign1);
-        }
-        n.assigns.add(assign);
-	n.node = temp;
-        if(n.id != null)
-        {
-            n.id.accept(this);
-        }
-	Bassigns = temp1;
-    }
-
-    public void visit(ArrayTypeNode n)
-    {
-        System.out.println("ArrayDimsNode");
-	List<AssignmentNode> temp1 = new ArrayList<AssignmentNode>();
-	temp1 = Bassigns;
-	Bassigns = new ArrayList<AssignmentNode>();
-        n.size.accept(this);
-	IdentifierNode temp = TempNode.newTemp();
-	ExprNode expr = null;
-        if(n.size instanceof BinExprNode){
-            expr = (BinExprNode)n.size;
-            expr = Bassigns.get(Bassigns.size()-1).left;
-        } else if (n.size instanceof NumNode){
-            expr = (NumNode)n.size;
-        }else if (n.size instanceof IdentifierNode){
-            expr = (IdentifierNode)n.size;
-        }
-	AssignmentNode assign = new AssignmentNode(temp, expr);
-        for(AssignmentNode assign1 : Bassigns){
-            n.assigns.add(assign1);
-        }
-        n.assigns.add(assign);
-	n.size = temp;
-        if(n.type != null)
-        {
-            n.type.accept(this);
-        }
-	Bassigns= temp1;
-    }
-
-    public void visit(BreakNode n)
-    {
-        n.falseLabel = globalLabel;
-    }
-
-    public void visit(AssignmentNode n)
-    {
-
-        n.left.accept(this);
-	List<AssignmentNode> temp1 = new ArrayList<AssignmentNode>();
-	temp1 = Bassigns;
-	Bassigns = new ArrayList<AssignmentNode>();
-        IdentifierNode leftId = (IdentifierNode)n.left;
-        Type leftType = leftId.type;
-	    print(" =");
-       
-	ExprNode expr = null;
-	n.right.accept(this);
-
+        print(";");
         println("");
-//         if(Bassigns.size()<2){
-//             TempNode.Tempminus();
-//             Bassigns = new ArrayList<AssignmentNode>();
-//         }
-	Bassigns = temp1;
     }
-    ExprNode t = null;
-    public void visit(BinExprNode n) {
-	
-	ExprNode expr = null;
-	//println("In Binary Expression Node:");
-        if (n.left instanceof IdentifierNode){
-       	    ((IdentifierNode) n.left).accept(this);
-        }else if (n.left instanceof NumNode) {
-            ((NumNode) n.left).accept(this);
-        }else if (n.left instanceof RealNode) {
-            ((RealNode) n.left).accept(this);
-        }else if (n.left instanceof BooleanNode){
-            ((BooleanNode)n.left).accept(this);
-        }else if (n.left instanceof ParenNode) {
-            ((ParenNode) n.left).accept(this);
+
+    public void visit(ArrayAccessNode n){
+        //n.id.accept(this);
+        n.index.accept(this);
+    }
+    public void visit(ArrayDimsNode n){
+        print("[");
+        n.size.accept(this);
+        IdentifierNode temp = TempNode.newTemp();
+        ExprNode expr = null;
+        if(n.size instanceof BinExprNode){
+            expr = BinassignList.get(BinassignList.size()-1).id;  
+        }
+        else if(n.size instanceof IdentifierNode){
+            expr = ((IdentifierNode)n.size);
+        }else if(n.size instanceof NumNode){
+            expr= (NumNode)n.size;
+        }
+        AssignmentNode assign= new AssignmentNode(temp,expr);
+        for(AssignmentNode assign1 : BinassignList){
+            n.assigns.add(assign1);
+        }
+        n.assigns.add(assign);
+        n.size = temp;
+        print("]");
+        if(n.dim!= null){
+            n.dim.accept(this);
+        }
+    }
+
+
+    public void visit(AssignmentNode n){
+        printIndent();
+        n.id.accept(this);
+        // List<AssignmentNode> temp1 = new ArrayList<AssignmentNode>();
+	    // temp1 = BinassignList;
+        print(" = ");
+        n.right.accept(this);
+        println(";");
+        // BinassignList = temp1;
+    }
+
+    public void visit(BreakStatementNode n){
+        printIndent();
+        n.falseLabel = globalLabel;
+        println("Break: goto " + n.falseLabel.id);
+    }
+    public void visit(TrueNode n){
+        print("true");
+    }
+    public void visit(FalseNode n){
+        print("false");
+    }
+    public void visit(BinExprNode n){
+        if(n.left instanceof ParenthesesNode){
+            ((ParenthesesNode)n.left).accept(this);
+        }
+        if(n.left instanceof IdentifierNode){
+           if(((IdentifierNode)n.left).ArrDims != null){
+               ((IdentifierNode)n.left).ArrDims.accept(this);
+               n.left = ((ArrayAccessNode)((IdentifierNode)n.left).ArrDims).id;
+           }
+           else{
+               ((IdentifierNode)n.left).accept(this);
+           }
+        }
+        else if (n.left instanceof NumNode){
+            ((NumNode)n.left).accept(this);
+        }else if(n.left instanceof RealNode){
+            ((RealNode)n.left).accept(this);
         }else if(n.left instanceof BinExprNode){
-            ((BinExprNode) n.left).accept(this);
-	} else { 	
-	}
-        print(" "+n.op);
-        if (n.right != null) {
-            if (n.right instanceof IdentifierNode) {
-                ((IdentifierNode) n.right).accept(this);
-            } else if (n.right instanceof NumNode) {
-                ((NumNode) n.right).accept(this);
-            } else if (n.right instanceof RealNode) {
-                ((RealNode) n.right).accept(this);
-            } else if (n.right instanceof BooleanNode){
-                ((BooleanNode) n.right).accept(this);
-            } else if (n.right instanceof ParenNode) {
-                ((ParenNode) n.right).accept(this);
-            } else if(n.right instanceof BinExprNode) {
-               ((BinExprNode) n.right).accept(this);
-           } else { 
-		    
-	    }
-        } else {
-            println("@@@ n.right == null in BinExprNode: " + n.right);
+            ((BinExprNode)n.left).accept(this);
+        }else {
+
         }
-	if(n.left != null){
-		IdentifierNode temp = TempNode.newTemp();
-	        if(!Bassigns.isEmpty()) n.left =a;
-	    	t = new BinExprNode(n.op,n.left,n.right);
-	   	    AssignmentNode assign = new AssignmentNode(temp, t);
-		    a = temp;
-	   	    Bassigns.add(assign);
-	}
-    }
-
-    public void visit(StatementNode n)
-    {
-	    printIndent();
-	    n.stmt.accept(this);
-    }
-
-
-    public void visit(IdentifierNode n)
-    {
-	 if (n.array != null)
-        {
-            n.array.accept(this);
+        if(n.op!=null){
+            print(" "+ n.op.toString()+ " ");
         }
-        print (" " + n.w);
-       
+        if(n.right!=null){
+            if(n.right instanceof ParenthesesNode){
+                ((ParenthesesNode)n.right).accept(this);
+            }
+            if(n.right instanceof IdentifierNode){
+                ((IdentifierNode)n.right).accept(this);
+            }
+            else if (n.right instanceof NumNode){
+                ((NumNode)n.right).accept(this);
+            }else if(n.right instanceof RealNode){
+                ((RealNode)n.right).accept(this);
+            }else if(n.right instanceof BinExprNode){
+                ((BinExprNode)n.right).accept(this);
+            }else {
+
+            }
+        }
+        if(n.left != null){
+            IdentifierNode temp = TempNode.newTemp();
+            if(!BinassignList.isEmpty()) n.left = lhs;
+            temp1 = new BinExprNode(n.op,n.left,n.right);
+            AssignmentNode assign = new AssignmentNode(temp, temp1);
+            lhs = temp;
+            BinassignList.add(assign);
+        }
+    }
+
+    public void visit(IdentifierNode n){
+        print(n.id);
+        if(n.ArrDims != null)
+            ((ArrayAccessNode)n.ArrDims).accept(this); 
+    }
+    public void visit(NumNode n){
+        print(""+n.value);
+    }
+    public void visit(RealNode n){
+        print(" "+n.value);
+    }
+
+    //////// Visit method for Intermediate code
+    ////
+
+    
+    public void visit(LabelNode n){
 
     }
 
-    public void visit(BooleanNode n)
-    {
-       
+    public void visit(TempNode n){
+
+    }
+    public void visit(GotoNode n){
+        n.stmt.accept(this);
     }
 
-    public void visit(NumNode n)
-    {
-        
-	print(" "+n.value);
-    }
 
-    public void visit(RealNode n)
-    {
-       
-	print(" "+n.value);
-    }
 
 
 
