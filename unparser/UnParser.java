@@ -1,25 +1,22 @@
-package intercode.unparser;
+package assign7.unparser;
 
-import intercode.ast.*;
-import intercode.inter.InterCode;
-import intercode.lexer.*;
-import intercode.parser.*;
-import intercode.typechecker.*;
-import intercode.visitor.*;
-import intercode.inter.*;
+import assign7.ast.*;
+import assign7.parser.*;
+import assign7.typechecker.TypeChecker;
+import assign7.visitor.*;
+import assign7.intercode.*;
 import java.io.*;
-import java.util.jar.Pack200;
 
-public class UnParser extends ASTVisitor {
 
-  //  public TypeChecker typechecker= null;
-    public InterCode inter=null;
-    public CompilationUnit cu= null;
+
+public class Unparser extends ASTVisitor
+{
+
     public File tempFile;
     public FileWriter tempFileWriter;
-    public Parser parser;
+    public InterCodeGen inter;
 
-    public UnParser(InterCode inter)
+    public Unparser(InterCodeGen inter)
     {
         try
         {
@@ -32,13 +29,8 @@ public class UnParser extends ASTVisitor {
 
         }
 
-      //  this.typechecker = typechecker;
-        //visit(this.typechecker.cu);
-
-        this.inter=inter;
-        cu=inter.cu;
-        visit(cu);
-
+        this.inter = inter;
+        visit(this.inter.cu);
 
         try
         {
@@ -50,20 +42,7 @@ public class UnParser extends ASTVisitor {
         }
     }
 
-    public UnParser (){
-        visit(this.inter.cu);
-    }
-
-
-
-
-
-
-
-/// Utility Method
-    ///
-
-  void print(String s)
+    void print(String s)
     {
         try
         {
@@ -113,249 +92,264 @@ public class UnParser extends ASTVisitor {
         }
         print(s);
     }
-////////////////////////////////////////////////////////////////////////////
-///////             Utility Methods Ends                         ///////////
-///////////////////////////////////////////////////////////////////////////
-    public void visit(CompilationUnit n){
+
+    public void visit(CompilationUnit n)
+    {
         n.block.accept(this);
     }
 
-    public void visit(BlockStatement n){
-        println("{");
-        indentUp();
-       //n.decls.accept(this);
-        indentDown();
-
-        println(" Blockstatement");
-        for(DeclarationNode decl:n.decls)
-            decl.accept(this);
-
-
-
-        indentUp();
-        //n.stmts.accept(this);
-        for(StatementNode stmt: n.stmts)
-            stmt.accept(this);
-        indentDown();
+    public void visit(BlockStatementNode n)
+    {
+        for(DeclarationNode decl: n.decls) 
+	        decl.accept(this);
+        
+        for(StatementNode stmt : n.stmts){
+            indentUp();
+	        stmt.accept(this);
+            indentDown();
+        }
+        
         printIndent();
-        indentDown();
         println("}");
     }
 
+    public void visit(DeclarationNode n)
+    {
+            n.type.accept(this);
+            print(" ");
+            n.id.accept(this);
 
-   /* public void visit(Declarations n){
-        if(n.decls!=null){
-            n.decl.accept(this);
-            n.decls.accept(this);
+            println(" ;");
+    }
+
+    public void visit(TypeNode n)
+    {
+        printIndent();
+	if (n.array != null)
+        {
+	    for (AssignmentNode a: n.array.assigns)
+	    	a.accept(this);
+            
         }
-    }*/
-    public void visit(DeclarationNode n){
+        print(n.basic.toString());
 
-        n.type.accept(this);
-        print(" ");
-        n.id.accept(this);
+        if(n.array != null)
+            n.array.accept(this);
+    }
+
+    public void visit(ArrayTypeNode n)
+    {   
+        
+        print("[");
+        (n.size).accept(this);
+//         if(n.size instanceof IdentifierNode) print("" + ((IdentifierNode)n.size).w);
+//         if(n.size instanceof NumNode) print("" + ((NumNode)n.size).value);
+//         print("" +n.size);
+        print("]");
+
+        if(n.type != null)
+            n.type.accept(this);
+    }
+
+    public void visit(StatementNode n)
+    {
+        n.stmt.accept(this);
+    }
+
+    public void visit(AssignmentNode n)
+    {
+    	
+        printIndent();
+         n.left.accept(this);
+         print(" = ");
+         if (n.right instanceof  IdentifierNode)
+             ((IdentifierNode)n.right).accept(this);
+         else if (n.right instanceof NumNode)
+            ((NumNode)n.right).accept(this);
+         else if (n.right instanceof RealNode)
+	    ((RealNode)n.right).accept(this);
+ 	else if (n.right instanceof BooleanNode)
+		((BooleanNode)n.right).accept(this);
+        else {
+             ((BinExprNode)n.right).accept(this);
+	    
+		
+	}
+	//else{ n.right.accept(this);}
+
         println(";");
+    }
 
+    public void visit(BinExprNode n)
+    {
+    	
+        if (n.left instanceof IdentifierNode)
+        {
+            ((IdentifierNode)n.left).accept(this);
+        }
+        else if (n.left instanceof NumNode)
+        {
+            ((NumNode)n.left).accept(this);
+        }
+        else if (n.left instanceof RealNode)
+        {
+            ((RealNode)n.left).accept(this);
+        }
+        else if (n.left instanceof BooleanNode)
+        {
+            ((BooleanNode)n.left).accept(this);
+        }
+        else if (n.left instanceof ParenNode)
+        {
+            ((ParenNode)n.left).accept(this);
+        } else if(n.left instanceof BinExprNode){
+            ((BinExprNode)n.left).accept(this);
+	}else {
+	
+	}
+
+        if (n.op != null)
+        {
+            print(" " + n.op.toString() + " ");
+        }
+
+        if (n.right != null)
+        {
+            if (n.right instanceof IdentifierNode)
+            {
+                ((IdentifierNode) n.right).accept(this);
+            }
+            else if (n.right instanceof NumNode)
+            {
+                ((NumNode) n.right).accept(this);
+            }
+            else if (n.right instanceof RealNode)
+            {
+                ((RealNode) n.right).accept(this);
+            }
+            else if (n.right instanceof BooleanNode)
+            {
+                ((BooleanNode) n.right).accept(this);
+            }
+            else if (n.right instanceof ParenNode)
+            {
+                ((ParenNode) n.right).accept(this);
+            } else if(n.right instanceof BinExprNode){
+            	((BinExprNode)n.right).accept(this);
+            }else{ }
+        }
+    }
+
+    public void visit(IdentifierNode n)
+    {
+    	
+        if (n.array != null)
+        {
+	     println("");
+	    for (AssignmentNode a: n.array.assigns){
+	    	printIndent();
+	    	a.accept(this);
+	    }
+            
+        }
+	print(n.id);
+	if (n.array != null)
+        { 
+	    n.array.accept(this); 
+        }
 
     }
 
-    public void visit(TypeNode n){
-        printIndent();
-        print(n.basic.toString());
-        if(n.array!=null){
+    public void visit(ArrayIDNode n)
+    {
+        print("[");
+        n.node.accept(this);
+        print("]");
+        if (n.array != null)
+        {
             n.array.accept(this);
         }
     }
-    public void visit(ArrayTypeNode n){
-        print("[");
-        print(""+n.size);
-        print("]");
 
-        if(n.type!=null){
-            n.type.accept(this);
-        }
+    public void visit(NumNode n)
+    {
+        print("" + n.value);
     }
 
-    /*public void visit(Statements n){
-        if(n.stmts!=null){
-            n.stmt.accept(this);
-            n.stmts.accept(this);
-        }
-    }*/
-
-
-    public void visit(ParenthesesNode n){
-//         print("(");
-        (n.expr).accept(this);
-//         print(")");
+    public void visit(RealNode n)
+    {
+        print("" + n.value);
     }
 
-    public void visit(IfStatementNode n){
+    public void visit(BreakNode n)
+    {
+        println("Break: goto "+ n.bLabel.id);
+    }
 
-        for(AssignmentNode assign:n.assigns)
-            assign.accept(this);
-
+    public void visit(ConditionalNode n)
+    {
+    	for (AssignmentNode assign : n.assigns)
+		assign.accept(this);
         printIndent();
-        print("IfFalse ");
-        n.cond.accept(this);
-
-        println(" goto "+n.falseLabel.id);
-        indentUp();
-        n.toGoto.accept(this);
-        indentDown();
-        println(n.falseLabel.id+":");        
-        if(n.else_stmt!=null) n.else_stmt.accept(this);
-
+        print("ifFalse ");
+       n.condition.accept(this);
+        println(" goto " + n.falseLabel.id);
+        n.IfGoto.accept(this);
+        
+	println(n.falseLabel.id+":");
+        // if (n.elseStmt != null)
+        // {
+        //     n.elseStmt.accept(this);
+        // }
     }
-
-    public void visit(WhileStatementNode n){
+    public void visit(WhileNode n)
+    {
+        //printIndent();
+        for (AssignmentNode assign : n.assigns)
+		assign.accept(this);
+      //  printIndent();
         println(n.startLabel.id + ": WhileStatement");
-        for (AssignmentNode assign : n.assigns)
-		    assign.accept(this);
+        printIndent();
         print("iffalse ");
-        n.cond.accept(this);
+       n.condition.accept(this);
         println(" goto " + n.falseLabel.id);
-        indentUp();
-        n.toGoto.accept(this);
+        n.wGoto.accept(this);
         println("goto "+n.startLabel.id);
+        println(n.falseLabel.id+":");
+
+        indentUp();
+        //n.stmt.accept(this);
         indentDown();
-        println(n.falseLabel.id+":");        indentUp();
-
-    }
-    public void visit(DoWhileStatementNode n){
-        println(n.startLabel.id + ": DoWhileStatement");
-        n.toGoto = new GotoNode(n.startLabel, n.stmt);
-        n.toGoto.accept(this);
-        for (AssignmentNode assign : n.assigns)
-		    assign.accept(this);
-        println("DoWhile: ");
-         indentDown();
-         printIndent();
-         print("iffalse ");
-         n.cond.accept(this);
-         println(" goto " + n.falseLabel.id);
-      
-         println("goto "+n.startLabel.id);
-         println(n.falseLabel.id+":");
-    }
-
-    public void visit(ArrayAccessNode n){
-        n.id.accept(this);
-
-        n.index.accept(this);
-    }
-    public void visit(ArrayDimsNode n){
-            println("");
-            indentUp();
-            printIndent();
-            for(AssignmentNode a : n.assigns)
-                a.accept(this);
-            indentDown();
-            printIndent();
-            printIndent();
-            print("[");
-                n.size.accept(this);
-            print("]");
-            if(n.dim!= null){
-                n.dim.accept(this);
-            }
-    }
-
-    public void visit(AssignmentNode n){
-        printIndent();
-        n.id.accept(this);
-        print(" = ");
-        if(n.right instanceof ParenthesesNode){
-            ((ParenthesesNode)n.right).accept(this);
-        }
-        if(n.right instanceof IdentifierNode){
-            ((IdentifierNode)n.right).accept(this);
-        }
-        else if (n.right instanceof NumNode){
-            ((NumNode)n.right).accept(this);
-        }else if(n.right instanceof RealNode){
-            ((RealNode)n.right).accept(this);
-        }else if(n.right instanceof TrueNode){
-            ((TrueNode)n.right).accept(this);
-        }else if(n.right instanceof FalseNode){
-            ((FalseNode)n.right).accept(this);
-        }else{
-            ((BinExprNode)n.right).accept(this);
-        }    
-        println(";");           
-    }
-
-    public void visit(BreakStatementNode n){
-        printIndent();
-        println(" goto " + n.falseLabel.id);
-    }
-
-    public void visit(TrueNode n){
-        print("true");
-    }
-
-    public void visit(FalseNode n){
-        print("false");
-    }
-
-    public void visit(BinExprNode n){
-        if(n.left instanceof ParenthesesNode){
-            ((ParenthesesNode)n.left).accept(this);
-        }
-        if(n.left instanceof IdentifierNode){
-           if(((IdentifierNode)n.left).ArrDims != null){
-               ((IdentifierNode)n.left).ArrDims.accept(this);
-               n.left = ((ArrayAccessNode)((IdentifierNode)n.left).ArrDims).id;
-           }
-           else{
-               ((IdentifierNode)n.left).accept(this);
-           }
-        }
-        else if (n.left instanceof NumNode){
-            ((NumNode)n.left).accept(this);
-        }else if(n.left instanceof RealNode){
-            ((RealNode)n.left).accept(this);
-        }else if(n.left instanceof BinExprNode){
-            ((BinExprNode)n.left).accept(this);
-        }else {
-
-        }
-        if(n.op!=null){
-            print(" "+ n.op.toString()+ " ");
-        }
-        if(n.right!=null){
-            if(n.right instanceof ParenthesesNode){
-                ((ParenthesesNode)n.right).accept(this);
-            }
-            if(n.right instanceof IdentifierNode){
-                ((IdentifierNode)n.right).accept(this);
-            }
-            else if (n.right instanceof NumNode){
-                ((NumNode)n.right).accept(this);
-            }else if(n.right instanceof RealNode){
-                ((RealNode)n.right).accept(this);
-            }else if(n.right instanceof BinExprNode){
-                ((BinExprNode)n.right).accept(this);
-            }else {
-
-            }
-        }
-    }
-
-    public void visit(IdentifierNode n){
-       
-        if(n.ArrDims != null)
-            ((ArrayAccessNode)n.ArrDims).accept(this);
-        else  print(n.id);
-    }
-    public void visit(NumNode n){
-        print(""+n.value);
-    }
-    public void visit(RealNode n){
-        print(" "+n.value);
     }
     public void visit(GotoNode n){
         n.stmt.accept(this);
     }
-
+    public void visit(DoWhileNode n)
+    {
+        for (AssignmentNode assign : n.assigns)
+		    assign.accept(this);
+      //  printIndent();
+        println(n.startLabel.id + ": Do Statement");
+       
+        printIndent();
+        n.dGoto.accept(this);
+        printIndent();
+        print("iffalse ");
+        n.condition.accept(this);
+        println(" goto " + n.falseLabel.id);
+      
+        println("goto "+n.startLabel.id);
+        println(n.falseLabel.id+":");
+       
+    }
+    public void visit(BooleanNode n)
+    {
+        print(n.bool.toString());
+    }
+    public void visit(ParenNode n)
+    {
+        print("(");
+        n.node.accept(this);
+        print(")");
+    }
 }
